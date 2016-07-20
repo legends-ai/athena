@@ -1,0 +1,31 @@
+#+TITLE: Athena
+
+* Overview
+Athena is a set of Spark jobs that process information from the `matches` table in Cassandra and write aggregated data to a results table. These jobs are all packaged into one Scala JAR and are run on Amazon's Elastic MapReduce.
+
+* Jobs
+
+Jobs can roughly be categorized into two categories: periodic and on-demand.
+
+** Periodic
+Periodic jobs include the following. They may be merged into the same job.
+
+*** Champion averages
+This includes things such as:
+- Average CS
+- Average damage dealth
+- Win rate
+
+*** Champion distributions
+Distributions show a histogram of two values plotted together of which one axis (the X axis) is discrete. These can include the following:
+- Win rate per patch
+- Win rate per amount of player experience
+
+** On-demand
+On-demand jobs include the following:
+
+*** Player champion scores
+A player can have a score for each champion based on what they do.
+
+*** Player suggestions
+A player may have suggestions, e.g. ward more at this location because you always get ganked here.
