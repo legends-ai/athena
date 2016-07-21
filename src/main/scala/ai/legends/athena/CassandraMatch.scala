@@ -1,7 +1,7 @@
 package ai.legends.athena
 
 import org.json4s._
-import org.json4s.jackson.JsonMethods
+import org.json4s.jackson.JsonMethods._
 
 case class CassandraMatch(
   id: String,
@@ -10,5 +10,11 @@ case class CassandraMatch(
   rank: Long,
   patch: String
 ) {
-  def toMatch(): Match = Match(JsonMethods.parse(this.body, false))
+
+  /** toMatch converts the Cassandra match to JSON. */
+  def toMatch(): Match = {
+    implicit val formats = DefaultFormats
+    return parse(this.body).extract[Match]
+  }
+
 }
