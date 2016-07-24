@@ -8,7 +8,7 @@ object Main {
     val conf = new SparkConf(true).set("spark.cassandra.connection.host", "127.0.0.1")
     val sc = new SparkContext(conf)
     val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
-    val patches = rdd.map(x => x.toMatch()).countByValue()
+    val patches = rdd.map(x => x.toMatch()).map(_.season).countByValue()
     println(patches)
   }
 }

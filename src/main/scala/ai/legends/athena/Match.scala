@@ -73,8 +73,8 @@ case class ParticipantTimeline (
 )
 
 case class Deltas (
-  tenToTwenty: Double,
-  zeroToTen: Double
+  tenToTwenty: Option[Double],
+  zeroToTen: Option[Double]
 )
 
 case class Masteries (
@@ -179,7 +179,7 @@ case class Match (
   season: String,
   mapId: Int,
   participantIdentities: List[ParticipantIdentities],
-  timeline: MatchTimeline,
+  timeline: Option[MatchTimeline],
   region: String,
   matchCreation: Int,
   queueType: String,

@@ -14,7 +14,7 @@ case class CassandraMatch(
   /** toMatch converts the Cassandra match to JSON. */
   def toMatch(): Match = {
     implicit val formats = DefaultFormats
-    return parse(this.body).extract[Match]
+    parse(this.body).extract[Match]
   }
 
 }
