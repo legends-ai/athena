@@ -1,6 +1,7 @@
-package ai.legends.athena
+package ai.legends.athena.matches
 
 import org.json4s.JsonAST.JValue
+import org.json4s.JsonDSL._
 
 case class MatchTimeline (
   frameInterval: Int,
@@ -42,19 +43,6 @@ case class Player (
   summonerName: String
 )
 
-case class Participant (
-//  stats: Stats,
-  highestAchievedSeasonTier: String,
-  teamId: Int,
-  spell1Id: Int,
-  spell2Id: Int,
-  masteries: List[Mastery],
-  participantId: Int,
-  timeline: ParticipantTimeline,
-  championId: Int,
-  runes: List[Rune]
-)
-
 case class Rune (
   rank: Int,
   runeId: Int
@@ -81,68 +69,6 @@ case class Mastery (
   masteryId: Int,
   rank: Int
 )
-
-// TODO(igm): break up class and transform
-// case class Stats (
-//   firstInhibitorAssist: Boolean,
-//   kills: Int,
-//   winner: Boolean,
-//   unrealKills: Int,
-//   item2: Int,
-//   neutralMinionsKilledEnemyJungle: Int,
-//   inhibitorKills: Int,
-//   item4: Int,
-//   quadraKills: Int,
-//   magicDamageDealt: Int,
-//   physicalDamageDealtToChampions: Int,
-//   neutralMinionsKilled: Int,
-//   item5: Int,
-//   trueDamageDealt: Int,
-//   wardsKilled: Int,
-//   deaths: Int,
-//   item1: Int,
-//   doubleKills: Int,
-//   champLevel: Int,
-//   totalScoreRank: Int,
-//   tripleKills: Int,
-//   visionWardsBoughtInGame: Int,
-//   neutralMinionsKilledTeamJungle: Int,
-//   assists: Int,
-//   combatPlayerScore: Int,
-//   objectivePlayerScore: Int,
-//   goldEarned: Int,
-//   largestMultiKill: Int,
-//   wardsPlaced: Int,
-//   firstInhibitorKill: Boolean,
-//   firstTowerKill: Boolean,
-//   trueDamageTaken: Int,
-//   totalPlayerScore: Int,
-//   physicalDamageDealt: Int,
-//   towerKills: Int,
-//   totalTimeCrowdControlDealt: Int,
-//   totalDamageDealtToChampions: Int,
-//   magicDamageTaken: Int,
-//   magicDamageDealtToChampions: Int,
-//   firstBloodKill: Boolean,
-//   goldSpent: Int,
-//   largestKillingSpree: Int,
-//   totalDamageTaken: Int,
-//   item3: Int,
-//   totalUnitsHealed: Int,
-//   largestCriticalStrike: Int,
-//   minionsKilled: Int,
-//   killingSprees: Int,
-//   trueDamageDealtToChampions: Int,
-//   totalDamageDealt: Int,
-//   pentaKills: Int,
-//   item6: Int,
-//   physicalDamageTaken: Int,
-//   item0: Int,
-//   firstBloodAssist: Boolean,
-//   totalHeal: Int,
-//   firstTowerAssist: Boolean,
-//   sightWardsBoughtInGame: Int
-// )
 
 case class Team (
   firstBaron: Boolean,

@@ -1,6 +1,6 @@
 package ai.legends.athena.champions
 
-import ai.legends.athena.Match
+import ai.legends.athena.matches.Match
 import com.datastax.spark.connector._
 import org.apache.spark.SparkContext._
 import com.datastax.spark.connector.rdd.CassandraTableScanRDD
@@ -16,12 +16,16 @@ case class Champion(
 object Champion {
 
   def calculateAll(rdd: RDD[Match]): Set[Champion] = {
-    val champBans = rdd.flatMap(_.teams).flatMap(_.bans)
+    val bans = rdd.flatMap(_.teams).flatMap(_.bans)
       .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
-    val champPlays = rdd.flatMap(_.participants)
+    val plays = rdd.flatMap(_.participants)
+      .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
+    val wins = rdd.flatMap(_.participants).filter(_.stats.winner)
       .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
 
-    println(champBans)
+    println(bans)
+    println(plays)
+    println(wins)
     return null
   }
 
