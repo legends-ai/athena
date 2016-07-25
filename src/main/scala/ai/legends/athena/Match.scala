@@ -4,10 +4,10 @@ import org.json4s.JsonAST.JValue
 
 case class MatchTimeline (
   frameInterval: Int,
-  frames: List[Frames]
+  frames: List[Frame]
 )
 
-case class Frames (
+case class Frame (
   participantFrames: Map[String, ParticipantFrame],
   timestamp: Int
 )
@@ -30,7 +30,7 @@ case class Position (
   y: Int
 )
 
-case class ParticipantIdentities (
+case class ParticipantIdentity (
   participantId: Int,
   player: Player
 )
@@ -42,20 +42,20 @@ case class Player (
   summonerName: String
 )
 
-case class Participants (
+case class Participant (
 //  stats: Stats,
   highestAchievedSeasonTier: String,
   teamId: Int,
   spell1Id: Int,
   spell2Id: Int,
-  masteries: List[Masteries],
+  masteries: List[Mastery],
   participantId: Int,
   timeline: ParticipantTimeline,
   championId: Int,
-  runes: List[Runes]
+  runes: List[Rune]
 )
 
-case class Runes (
+case class Rune (
   rank: Int,
   runeId: Int
 )
@@ -77,7 +77,7 @@ case class Deltas (
   zeroToTen: Option[Double]
 )
 
-case class Masteries (
+case class Mastery (
   masteryId: Int,
   rank: Int
 )
@@ -173,12 +173,12 @@ case class Match (
   matchVersion: String,
   teams: List[Team],
   platformId: String,
-  participants: List[Participants],
+  participants: List[Participant],
   matchMode: String,
   matchType: String,
   season: String,
   mapId: Int,
-  participantIdentities: List[ParticipantIdentities],
+  participantIdentities: List[ParticipantIdentity],
   timeline: Option[MatchTimeline],
   region: String,
   matchCreation: Int,
