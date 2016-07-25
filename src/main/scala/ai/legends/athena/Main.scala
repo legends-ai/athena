@@ -1,5 +1,6 @@
 package ai.legends.athena
 
+import ai.legends.athena.champions.Champion
 import org.apache.spark.{ SparkConf, SparkContext }
 import com.datastax.spark.connector._
 
@@ -9,5 +10,6 @@ object Main {
     val sc = new SparkContext(conf)
     val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
     val matches = rdd.map(x => x.toMatch())
+    Champion.calculateAll(matches)
   }
 }

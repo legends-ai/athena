@@ -144,7 +144,7 @@ case class Masteries (
 //   sightWardsBoughtInGame: Int
 // )
 
-case class Teams (
+case class Team (
   firstBaron: Boolean,
   winner: Boolean,
   inhibitorKills: Int,
@@ -152,7 +152,7 @@ case class Teams (
   teamId: Int,
   firstBlood: Boolean,
   firstDragon: Boolean,
-  bans: List[Bans],
+  bans: List[Ban],
   towerKills: Int,
   dominionVictoryScore: Int,
   vilemawKills: Int,
@@ -163,7 +163,7 @@ case class Teams (
   firstInhibitor: Boolean
 )
 
-case class Bans (
+case class Ban (
   championId: Int,
   pickTurn: Int
 )
@@ -171,7 +171,7 @@ case class Bans (
 case class Match (
   matchDuration: Int,
   matchVersion: String,
-  teams: List[Teams],
+  teams: List[Team],
   platformId: String,
   participants: List[Participants],
   matchMode: String,
