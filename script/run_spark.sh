@@ -2,7 +2,6 @@
 
 DIR=`dirname $0`
 
-# Script to run stuff from the plane
 spark-submit \
     --class ai.legends.athena.Main \
     --master local[4] \
