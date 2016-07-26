@@ -1,7 +1,8 @@
 package ai.legends.athena.matches
 
-import org.json4s.JsonAST.{ JObject, JValue }
+import org.json4s._
 import org.json4s.JsonDSL._
+import org.json4s.jackson.JsonMethods._
 
 case class Participant (
   stats: ParticipantStats,
@@ -18,7 +19,9 @@ case class Participant (
 
 object Participant {
   def transform(obj: JObject): JValue = {
-    val newStats = ParticipantStats.jsonFromParticipants(obj \ "stats")
-    return obj ~ ("stats" -> newStats)
+    obj.transformField {
+      case JField("stats", s) =>
+        JField("stats", ParticipantStats.jsonFromParticipants(s.asInstanceOf[JObject]))
+    }
   }
 }

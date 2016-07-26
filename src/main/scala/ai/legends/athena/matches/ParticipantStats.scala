@@ -1,8 +1,8 @@
 package ai.legends.athena.matches
 
-import org.json4s.JsonAST.JObject
+import org.json4s._
 import org.json4s.JsonDSL._
-import org.json4s.JsonAST.JValue
+import org.json4s.jackson.JsonMethods._
 
 case class ParticipantStats (
   winner: Boolean,
@@ -24,14 +24,16 @@ case class ParticipantStats (
 )
 
 object ParticipantStats {
-  def jsonFromParticipants(obj: JValue): JValue = {
-    ("damage" -> extract(obj, ParticipantDamage.fields)) ~
-    ("firsts" -> extract(obj, ParticipantFirsts.fields)) ~
-    ("items" -> extract(obj, ParticipantItems.fields)) ~
-    ("kda" -> extract(obj, ParticipantKDA.fields)) ~
-    ("wards" -> extract(obj, ParticipantWards.fields))
+  def jsonFromParticipants(obj: JObject): JValue = {
+    obj ~
+      JField("damage", extract(obj, ParticipantDamage.fields)) ~
+      JField("firsts", extract(obj, ParticipantFirsts.fields)) ~
+      JField("items", extract(obj, ParticipantItems.fields)) ~
+      JField("kda", extract(obj, ParticipantKDA.fields)) ~
+      JField("wards", extract(obj, ParticipantWards.fields))
   }
-  def extract(obj: JValue, vals: List[String]): JValue = {
-    vals.map(x => (x -> (obj \ x))).foldLeft(JObject())(_ ~ _)
+
+  def extract(obj: JObject, keys: List[String]): JValue = {
+    keys.map(key => (key -> (obj \ key))).foldLeft(JObject())(_ ~ _)
   }
 }
