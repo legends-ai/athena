@@ -13,19 +13,6 @@ case class Frame (
   timestamp: Int
 )
 
-case class ParticipantFrame (
-  totalGold: Int,
-  dominionScore: Int,
-  currentGold: Int,
-  jungleMinionsKilled: Int,
-  participantId: Int,
-  xp: Int,
-  position: Position,
-  teamScore: Int,
-  minionsKilled: Int,
-  level: Int
-)
-
 case class Position (
   x: Int,
   y: Int
@@ -48,18 +35,6 @@ case class Rune (
   runeId: Int
 )
 
-case class ParticipantTimeline (
-  goldPerMinDeltas: Deltas,
-  damageTakenPerMinDeltas: Deltas,
-  role: String,
-  xpDiffPerMinDeltas: Deltas,
-  lane: String,
-  xpPerMinDeltas: Deltas,
-  creepsPerMinDeltas: Deltas,
-  damageTakenDiffPerMinDeltas: Deltas,
-  csDiffPerMinDeltas: Deltas
-)
-
 case class Deltas (
   tenToTwenty: Option[Double],
   zeroToTen: Option[Double]
@@ -68,25 +43,6 @@ case class Deltas (
 case class Mastery (
   masteryId: Int,
   rank: Int
-)
-
-case class Team (
-  firstBaron: Boolean,
-  winner: Boolean,
-  inhibitorKills: Int,
-  dragonKills: Int,
-  teamId: Int,
-  firstBlood: Boolean,
-  firstDragon: Boolean,
-  bans: List[Ban],
-  towerKills: Int,
-  dominionVictoryScore: Int,
-  vilemawKills: Int,
-  riftHeraldKills: Int,
-  firstRiftHerald: Boolean,
-  baronKills: Int,
-  firstTower: Boolean,
-  firstInhibitor: Boolean
 )
 
 case class Ban (

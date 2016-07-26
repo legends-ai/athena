@@ -12,7 +12,7 @@ case class Participant (
   spell2Id: Int,
   masteries: List[Mastery],
   participantId: Int,
-  timeline: ParticipantTimeline,
+  timeline: Option[ParticipantTimeline],
   championId: Int,
   runes: List[Rune]
 )
