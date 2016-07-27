@@ -25,27 +25,26 @@ case class Match (
 object Match {
 
   def fromJSON(json: String): Match = {
-    val m = parse(json)
-    implicit val formats = DefaultFormats
-
-    val transformed = m.asInstanceOf[JObject] ~ ("participants" -> transformParticipants(m \ "participants"))
-    println("+\n" * 10)
-    println(((m \ "participants")(0) \ "stats") \ "winner")
-    println(((transformed \ "participants")(0) \ "stats") \ "winner")
-    println(((transformed \ "participants")(1) \ "stats") \ "winner")
-    println("+\n" * 10)
-    transformed.extract[Match]
+    fromJValue(adaptJSON(parse(json)))
   }
 
+  def adaptJSON(json: JValue): JValue = {
+    json.asInstanceOf[JObject] mapField {
+      case ("participants", _) =>
+        ("participants" -> transformParticipants(json \ "participants"))
+      case other => other
+    }
+  }
+
+  def fromJValue(json: JValue): Match = {
+    implicit val formats = DefaultFormats
+    json.extract[Match]
+  }
 
   def transformParticipants(json: JValue): JArray = {
     json.asInstanceOf[JArray].transform {
       case obj: JObject => Participant.transform(obj)
     }.asInstanceOf[JArray]
-    // json.asInstanceOf[JArray].arr.map {
-    //   case obj: JObject => Participant.transform(obj)
-    //   case x => x
-    // }
   }
 
 }

@@ -248,6 +248,15 @@ object MatchFixtures {
 
   val participantsJSON = parse(participantsStr).asInstanceOf[JArray]
 
+  val matchStr = s"""
+  {
+     "asdf": 123,
+     "participants": ${participantsStr}
+  }
+  """
+
+  val matchJSON = parse(matchStr).asInstanceOf[JValue]
+
   val stats = ParticipantStats(
     winner = false,
     champLevel = 11,
