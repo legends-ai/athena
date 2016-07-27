@@ -35,7 +35,6 @@ object Champion {
         id,
         bans.getOrElse(id, 0),
         ts,
-
         ChampionRates.fromTotals(count, ts)
       )
     }
