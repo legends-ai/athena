@@ -2,7 +2,6 @@ package ai.legends.athena.champions
 
 import ai.legends.athena.matches.Participant
 
-
 case class ChampionTotals(
   plays: Int,
   playsByPlayer: Map[Int, Int],
@@ -55,4 +54,5 @@ object ChampionTotals {
   def apply(participant: Participant): ChampionTotals = {
     ChampionTotals().add(participant)
   }
+
 }
