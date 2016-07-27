@@ -1,12 +1,14 @@
 package ai.legends.athena.champions
 
-import ai.legends.athena.matches.Match
+import ai.legends.athena.matches.{ Match, Participant }
 import com.datastax.spark.connector._
+import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import com.datastax.spark.connector.rdd.CassandraTableScanRDD
 import org.apache.spark.rdd.RDD
 
 case class Champion(
+  id: Int,
   bans: Int,
   plays: Int,
   banRate: Double,
@@ -15,18 +17,32 @@ case class Champion(
 
 object Champion {
 
-  def calculateAll(rdd: RDD[Match]): Set[Champion] = {
+  def calculateAll(rdd: RDD[Match])(implicit sc: SparkContext): Set[Champion] = {
+    val count = rdd.count
     val bans = rdd.flatMap(_.teams).flatMap(_.bans)
       .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
-    val plays = rdd.flatMap(_.participants)
+    val participants = rdd.flatMap(_.participants)
+    val plays = participants
       .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
-    val wins = rdd.flatMap(_.participants).filter(_.stats.winner)
+    val wins = participants.filter(_.stats.winner)
       .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
+
+    participants
+      .map(p => (p.championId, p))
+      .combineByKey[ChampionTotals](
+        ChampionTotals(_: Participant),
+        (acc: ChampionTotals, p: Participant) => acc.add(p),
+        (a: ChampionTotals, b: ChampionTotals) => a + b
+      )
 
     println(bans)
     println(plays)
     println(wins)
     return null
+  }
+
+  def calculate(id: Int, rdd: RDD[Participant]): Champion = {
+    null
   }
 
 }
