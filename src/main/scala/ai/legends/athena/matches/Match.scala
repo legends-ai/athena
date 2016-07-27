@@ -35,7 +35,6 @@ object Match {
     println(((transformed \ "participants")(1) \ "stats") \ "winner")
     println("+\n" * 10)
     transformed.extract[Match]
- 
   }
 
 
