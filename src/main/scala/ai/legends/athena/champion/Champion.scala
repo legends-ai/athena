@@ -22,12 +22,8 @@ object Champion {
     val bans = rdd.flatMap(_.teams).flatMap(_.bans)
       .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
     val participants = rdd.flatMap(_.participants)
-    val plays = participants
-      .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
-    val wins = participants.filter(_.stats.winner)
-      .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
 
-    participants
+    val totals = participants
       .map(p => (p.championId, p))
       .combineByKey[ChampionTotals](
         ChampionTotals(_: Participant),
@@ -35,9 +31,7 @@ object Champion {
         (a: ChampionTotals, b: ChampionTotals) => a + b
       )
 
-    println(bans)
-    println(plays)
-    println(wins)
+    println(totals)
     return null
   }
 
