@@ -10,9 +10,8 @@ import org.apache.spark.rdd.RDD
 case class Champion(
   id: Int,
   bans: Int,
-  plays: Int,
-  banRate: Double,
-  playRate: Double
+  totals: ChampionTotals,
+  rates: ChampionRates
 )
 
 object Champion {
@@ -31,12 +30,17 @@ object Champion {
         (a: ChampionTotals, b: ChampionTotals) => a + b
       )
 
-    println(totals)
-    return null
-  }
+    val champs = totals.map {
+      case (id, ts) => Champion(
+        id,
+        bans.getOrElse(id, 0),
+        ts,
 
-  def calculate(id: Int, rdd: RDD[Participant]): Champion = {
-    null
+        ChampionRates.fromTotals(count, ts)
+      )
+    }
+
+    champs.collect().toSet
   }
 
 }
