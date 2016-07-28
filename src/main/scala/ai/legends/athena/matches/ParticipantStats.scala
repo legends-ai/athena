@@ -1,6 +1,6 @@
 package ai.legends.athena.matches
 
-import ai.legends.athena.aggregates.ParticipantKDA
+import ai.legends.athena.aggregates.{ ParticipantKDA, ParticipantItems }
 import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
