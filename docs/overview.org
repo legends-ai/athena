@@ -3,7 +3,19 @@
 * Overview
 Athena is a set of Spark jobs that process information from the `matches` table in Cassandra and write aggregated data to a results table. These jobs are all packaged into one Scala JAR and are run on Amazon's Elastic MapReduce.
 
-* Jobs
+* Champion aggregation
+A champion's statistics can be represented by one large JSON blob stored in Cassandra.
+
+It is generated with the following steps:
+
+1. Bans per champion are calculated per team. 
+2. Participants are grouped by champion. There can only be one champion of a type per game.
+3. Participant lists are aggregated into ChampionTotals objects. These are just sums over the participant data.
+4. Above information is combined with total count to produce rates in terms of percentage.
+5. All information is stored in a Champion object.
+6. Data is written as a JSON blob to Cassandra.
+
+* (DEPRECATED, PLEASE IGNORE) Jobs
 
 Jobs can roughly be categorized into two categories: periodic and on-demand.
 

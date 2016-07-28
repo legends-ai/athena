@@ -8,7 +8,8 @@ case class ChampionTotals(
   wins: Int = 0,
   kills: Long = 0,
   deaths: Long = 0,
-  assists: Long = 0
+  assists: Long = 0,
+  damage: ChampionDamageTotals = ChampionDamageTotals()
 ) {
 
   def add(participant: Participant): ChampionTotals = {
@@ -19,7 +20,8 @@ case class ChampionTotals(
       wins = wins + (if (participant.stats.winner) 1 else 0),
       kills = kills + participant.stats.kda.kills,
       deaths = deaths + participant.stats.kda.deaths,
-      assists = assists + participant.stats.kda.assists
+      assists = assists + participant.stats.kda.assists,
+      damage = damage + participant.stats.damage
     )
   }
 
@@ -32,7 +34,8 @@ case class ChampionTotals(
       wins = wins + other.wins,
       kills = kills + other.kills,
       deaths = deaths + other.deaths,
-      assists = assists + other.assists
+      assists = assists + other.assists,
+      damage = damage + other.damage
     )
   }
 

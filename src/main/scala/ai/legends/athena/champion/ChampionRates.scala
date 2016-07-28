@@ -7,11 +7,11 @@ case class ChampionRates(
 )
 
 object ChampionRates {
-  def fromTotals(count: Long, totals: ChampionTotals): ChampionRates = {
+  def fromTotals(count: Long, bans: Int, totals: ChampionTotals): ChampionRates = {
     ChampionRates(
-      totals.wins.toDouble / totals.plays,
-      0.0,
-      totals.plays.toDouble / count
+      winRate = totals.wins.toDouble / totals.plays,
+      banRate = bans.toDouble / totals.plays,
+      playRate = totals.plays.toDouble / count
     )
   }
 }

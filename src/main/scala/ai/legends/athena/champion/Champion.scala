@@ -9,7 +9,7 @@ import org.apache.spark.rdd.RDD
 
 case class Champion(
   id: Int,
-  bans: Int,
+  banCt: Int,
   totals: ChampionTotals,
   rates: ChampionRates
 )
@@ -18,8 +18,6 @@ object Champion {
 
   def calculateAll(rdd: RDD[Match])(implicit sc: SparkContext): Set[Champion] = {
     val count = rdd.count
-    val bans = rdd.flatMap(_.teams).flatMap(_.bans)
-      .map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
     val participants = rdd.flatMap(_.participants)
 
     val totals = participants
@@ -30,13 +28,19 @@ object Champion {
         (a: ChampionTotals, b: ChampionTotals) => a + b
       )
 
+    val bans = rdd.flatMap(_.teams).flatMap(_.bans)
+    val bansByChamp = bans.map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
+
     val champs = totals.map {
-      case (id, ts) => Champion(
-        id,
-        bans.getOrElse(id, 0),
-        ts,
-        ChampionRates.fromTotals(count, ts)
-      )
+      case (id, ts) => {
+        val banCt = bansByChamp.getOrElse(id, 0)
+        Champion(
+          id = id,
+          banCt = banCt,
+          totals = ts,
+          rates = ChampionRates.fromTotals(count, banCt, ts)
+        )
+      }
     }
 
     champs.collect().toSet

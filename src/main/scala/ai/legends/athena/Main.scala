@@ -10,6 +10,7 @@ object Main {
     implicit val sc = new SparkContext(conf)
     val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
     val matches = rdd.map(x => x.toMatch())
-    Champion.calculateAll(matches)
+    val champs = Champion.calculateAll(matches)
+    println(champs.head)
   }
 }
