@@ -1,8 +1,6 @@
-package ai.legends.athena.champions
+package ai.legends.athena.aggregates
 
-import ai.legends.athena.matches.ParticipantDamage
-
-case class ChampionDamageTotals (
+case class DamageAggregate (
   magicDamageDealt: Long = 0,
   magicDamageDealtToChampions: Long = 0,
   magicDamageTaken: Long = 0,
@@ -18,8 +16,8 @@ case class ChampionDamageTotals (
   totalDamageTaken: Long = 0
 ) {
 
-  def +(dmg: ParticipantDamage): ChampionDamageTotals = {
-    ChampionDamageTotals(
+  def +(dmg: ParticipantDamage): DamageAggregate = {
+    DamageAggregate(
       magicDamageDealt + dmg.magicDamageDealt,
       magicDamageDealtToChampions + dmg.magicDamageDealtToChampions,
       magicDamageTaken + dmg.magicDamageTaken,
@@ -36,8 +34,8 @@ case class ChampionDamageTotals (
     )
   }
 
-  def +(dmg: ChampionDamageTotals): ChampionDamageTotals = {
-    ChampionDamageTotals(
+  def +(dmg: DamageAggregate): DamageAggregate = {
+    DamageAggregate(
       magicDamageDealt + dmg.magicDamageDealt,
       magicDamageDealtToChampions + dmg.magicDamageDealtToChampions,
       magicDamageTaken + dmg.magicDamageTaken,
@@ -56,5 +54,21 @@ case class ChampionDamageTotals (
 
 }
 
-object ChampionDamageTotals {
+object DamageAggregate {
 }
+
+case class ParticipantDamage (
+  magicDamageDealt: Int,
+  magicDamageDealtToChampions: Int,
+  magicDamageTaken: Int,
+  physicalDamageDealt: Int,
+  physicalDamageDealtToChampions: Int,
+  physicalDamageTaken: Int,
+  totalDamageDealt: Int,
+  totalDamageDealtToChampions: Int,
+  trueDamageDealt: Int,
+  trueDamageDealtToChampions: Int,
+  trueDamageTaken: Int,
+  largestCriticalStrike: Int,
+  totalDamageTaken: Int
+)

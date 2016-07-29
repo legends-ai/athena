@@ -1,27 +1,27 @@
 package ai.legends.athena.aggregates
 
-case class ChampionKDATotals (
-  assists: Long,
-  deaths: Long,
-  kills: Long,
-  killingSprees: Long,
-  pentaKills: Long,
-  quadraKills: Long,
-  tripleKills: Long,
-  unrealKills: Long,
-  largestKillingSpree: Long,
-  largestMultiKill: Long,
-  inhibitorKills: Long,
-  minionsKilled: Long,
-  towerKills: Long,
-  neutralMinionsKilled: Long,
-  neutralMinionsKilledEnemyJungle: Long,
-  neutralMinionsKilledTeamJungle: Long,
-  doubleKills: Long
+case class KDAAggregate (
+  assists: Long = 0,
+  deaths: Long = 0,
+  kills: Long = 0,
+  killingSprees: Long = 0,
+  pentaKills: Long = 0,
+  quadraKills: Long = 0,
+  tripleKills: Long = 0,
+  unrealKills: Long = 0,
+  largestKillingSpree: Long = 0,
+  largestMultiKill: Long = 0,
+  inhibitorKills: Long = 0,
+  minionsKilled: Long = 0,
+  towerKills: Long = 0,
+  neutralMinionsKilled: Long = 0,
+  neutralMinionsKilledEnemyJungle: Long = 0,
+  neutralMinionsKilledTeamJungle: Long = 0,
+  doubleKills: Long = 0
 ) {
 
-  def +(kda: ChampionKDATotals): ChampionKDATotals = {
-    ChampionKDATotals(
+  def +(kda: KDAAggregate): KDAAggregate = {
+    KDAAggregate(
       assists + kda.assists,
       deaths + kda.deaths,
       kills + kda.kills,
@@ -42,8 +42,8 @@ case class ChampionKDATotals (
     )
   }
 
-  def +(kda: ParticipantKDA): ChampionKDATotals = {
-    ChampionKDATotals(
+  def +(kda: ParticipantKDA): KDAAggregate = {
+    KDAAggregate(
       assists + kda.assists,
       deaths + kda.deaths,
       kills + kda.kills,
@@ -85,7 +85,3 @@ case class ParticipantKDA (
   neutralMinionsKilledTeamJungle: Int,
   doubleKills: Int
 )
-
-object ParticipantKDA {
-  val fields = classOf[ParticipantKDA].getDeclaredFields.map(_.getName).toList
-}

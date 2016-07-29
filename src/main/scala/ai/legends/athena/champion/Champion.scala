@@ -1,6 +1,7 @@
 package ai.legends.athena.champions
 
 import ai.legends.athena.matches.{ Match, Participant }
+import ai.legends.athena.aggregates._
 import com.datastax.spark.connector._
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
@@ -10,7 +11,7 @@ import org.apache.spark.rdd.RDD
 case class Champion(
   id: Int,
   banCt: Int,
-  totals: ChampionTotals,
+  totals: ChampionAggregate,
   rates: ChampionRates
 )
 
@@ -22,10 +23,10 @@ object Champion {
 
     val totals = participants
       .map(p => (p.championId, p))
-      .combineByKey[ChampionTotals](
-        ChampionTotals(_: Participant),
-        (acc: ChampionTotals, p: Participant) => acc.add(p),
-        (a: ChampionTotals, b: ChampionTotals) => a + b
+      .combineByKey[ChampionAggregate](
+        ChampionAggregate(_: Participant),
+        (acc: ChampionAggregate, p: Participant) => acc + p,
+        (a: ChampionAggregate, b: ChampionAggregate) => a + b
       )
 
     val bans = rdd.flatMap(_.teams).flatMap(_.bans)

@@ -1,5 +1,7 @@
 package ai.legends.athena.champions
 
+import ai.legends.athena.aggregates._
+
 case class ChampionRates(
   winRate: Double,
   banRate: Double,
@@ -7,11 +9,11 @@ case class ChampionRates(
 )
 
 object ChampionRates {
-  def fromTotals(count: Long, bans: Int, totals: ChampionTotals): ChampionRates = {
+  def fromTotals(count: Long, bans: Int, agg: ChampionAggregate): ChampionRates = {
     ChampionRates(
-      winRate = totals.wins.toDouble / totals.plays,
-      banRate = bans.toDouble / totals.plays,
-      playRate = totals.plays.toDouble / count
+      winRate = agg.stats.winner.toDouble / agg.stats.plays,
+      banRate = bans.toDouble / agg.stats.plays,
+      playRate = agg.stats.plays.toDouble / count
     )
   }
 }

@@ -2,7 +2,7 @@ package ai.legends.athena.aggregates
 
 import ai.legends.athena.utils.Combiners._
 
-case class ChampionItems (
+case class ItemsAggregate (
   item0: Map[Int, Int] = Map(),
   item1: Map[Int, Int] = Map(),
   item2: Map[Int, Int] = Map(),
@@ -12,8 +12,8 @@ case class ChampionItems (
   item6: Map[Int, Int] = Map()
 ) {
 
-  def +(items: ChampionItems): ChampionItems = {
-    ChampionItems(
+  def +(items: ItemsAggregate): ItemsAggregate = {
+    ItemsAggregate(
       item0 |+| items.item0,
       item1 |+| items.item1,
       item2 |+| items.item2,
@@ -24,8 +24,8 @@ case class ChampionItems (
     )
   }
 
-  def +(items: ParticipantItems): ChampionItems = {
-    ChampionItems(
+  def +(items: ParticipantItems): ItemsAggregate = {
+    ItemsAggregate(
       item0 ++ items.item0,
       item1 ++ items.item1,
       item2 ++ items.item2,
@@ -47,7 +47,3 @@ case class ParticipantItems (
   item5: Int,
   item6: Int
 )
-
-object ParticipantItems {
-  val fields = classOf[ParticipantItems].getDeclaredFields.map(_.getName).toList
-}

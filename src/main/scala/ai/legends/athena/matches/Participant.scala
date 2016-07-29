@@ -1,5 +1,6 @@
 package ai.legends.athena.matches
 
+import ai.legends.athena.aggregates._
 import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
@@ -18,10 +19,32 @@ case class Participant (
 )
 
 object Participant {
+
+  val statsFields = Map(
+    "damage" -> classOf[ParticipantDamage],
+    "firsts" -> classOf[ParticipantFirsts],
+    "items" -> classOf[ParticipantItems],
+    "kda" -> classOf[ParticipantKDA],
+    "wards" -> classOf[ParticipantWards]
+  )
+
   def transform(obj: JObject): JValue = {
     obj.transformField {
       case JField("stats", s) =>
-        JField("stats", ParticipantStats.jsonFromParticipants(s.asInstanceOf[JObject]))
+        JField("stats", jsonFromParticipants(s.asInstanceOf[JObject]))
     }
   }
+
+  def jsonFromParticipants(obj: JObject): JValue = {
+    statsFields.foldLeft(obj) {
+      case (acc, (k, v)) =>
+        acc ~ JField(k, extract(obj,
+          v.getDeclaredFields.map(_.getName).toList))
+    }
+  }
+
+  def extract(obj: JObject, keys: List[String]): JValue = {
+    keys.map(key => (key -> (obj \ key))).foldLeft(JObject())(_ ~ _)
+  }
+
 }
