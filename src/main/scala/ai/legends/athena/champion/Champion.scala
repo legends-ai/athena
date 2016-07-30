@@ -11,8 +11,7 @@ import org.apache.spark.rdd.RDD
 case class Champion(
   id: Int,
   banCt: Int,
-  totals: ChampionAggregate,
-  rates: ChampionRates
+  participantAgg: ParticipantAggregate
 )
 
 object Champion {
@@ -21,25 +20,18 @@ object Champion {
     val count = rdd.count
     val participants = rdd.flatMap(_.participants)
 
-    val totals = participants
-      .map(p => (p.championId, p))
-      .combineByKey[ChampionAggregate](
-        ChampionAggregate(_: Participant),
-        (acc: ChampionAggregate, p: Participant) => acc + p,
-        (a: ChampionAggregate, b: ChampionAggregate) => a + b
-      )
-
     val bans = rdd.flatMap(_.teams).flatMap(_.bans)
     val bansByChamp = bans.map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
 
-    val champs = totals.map {
-      case (id, ts) => {
+    val participantAggs = ParticipantAggregate.fromRDD(participants)
+
+    val champs = participantAggs.map {
+      case (id, participantAgg) => {
         val banCt = bansByChamp.getOrElse(id, 0)
         Champion(
           id = id,
           banCt = banCt,
-          totals = ts,
-          rates = ChampionRates.fromTotals(count, banCt, ts)
+          participantAgg = participantAgg
         )
       }
     }
