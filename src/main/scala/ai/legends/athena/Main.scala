@@ -3,6 +3,10 @@ package ai.legends.athena
 import ai.legends.athena.champions.Champion
 import org.apache.spark.{ SparkConf, SparkContext }
 import com.datastax.spark.connector._
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write}
 
 object Main {
   def main(args: Array[String]) {
@@ -11,6 +15,7 @@ object Main {
     val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
     val matches = rdd.map(x => x.toMatch())
     val champs = Champion.calculateAll(matches)
-    println(champs.head)
+    implicit val formats = Serialization.formats(NoTypeHints)
+    println(write(champs.head))
   }
 }
