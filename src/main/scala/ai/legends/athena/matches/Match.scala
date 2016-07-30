@@ -42,7 +42,7 @@ object Match {
   }
 
   def transformParticipants(json: JValue): JArray = {
-    json.asInstanceOf[JArray].transform {
+    json.transform {
       case obj: JObject => Participant.transform(obj)
     }.asInstanceOf[JArray]
   }
