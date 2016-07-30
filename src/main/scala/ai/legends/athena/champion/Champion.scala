@@ -1,6 +1,6 @@
 package ai.legends.athena.champions
 
-import ai.legends.athena.matches.{ Match, Participant }
+import ai.legends.athena.matches.{ Ban, Match, Participant }
 import ai.legends.athena.aggregates._
 import com.datastax.spark.connector._
 import org.apache.spark.SparkContext
@@ -10,33 +10,44 @@ import org.apache.spark.rdd.RDD
 
 case class Champion(
   id: Int,
-  banCt: Int,
-  participantAgg: ParticipantAggregate
+  scalars: ChampionScalars
 )
 
 object Champion {
 
   def calculateAll(rdd: RDD[Match])(implicit sc: SparkContext): Set[Champion] = {
     val count = rdd.count
+
     val participants = rdd.flatMap(_.participants)
+    val bansMap = bansByChamp(rdd.flatMap(_.teams).flatMap(_.bans))
+    val participantAggs = ParticipantAggregate.fromRDD(participants).collectAsMap()
 
-    val bans = rdd.flatMap(_.teams).flatMap(_.bans)
-    val bansByChamp = bans.map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
-
-    val participantAggs = ParticipantAggregate.fromRDD(participants)
-
-    val champs = participantAggs.map {
-      case (id, participantAgg) => {
-        val banCt = bansByChamp.getOrElse(id, 0)
-        Champion(
-          id = id,
-          banCt = banCt,
-          participantAgg = participantAgg
+    participantAggs.map {
+      case (id, participantAgg) =>
+        ChampionData(
+          id,
+          count,
+          bansMap.getOrElse(id, 0),
+          participantAgg
         )
-      }
-    }
+    }.map {
+      case data =>
+        Champion(
+          data.id,
+          ChampionScalars(data)
+        )
+    }.toSet
+  }
 
-    champs.collect().toSet
+  def bansByChamp(rdd: RDD[Ban]) = {
+    rdd.map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
   }
 
 }
+
+case class ChampionData(
+  id: Int,
+  count: Long,
+  bans: Int,
+  participantAgg: ParticipantAggregate
+)
