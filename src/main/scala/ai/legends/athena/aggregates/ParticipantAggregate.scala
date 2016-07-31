@@ -8,14 +8,16 @@ import org.apache.spark.SparkContext._
 case class ParticipantAggregate(
   plays: Int = 0,
   playsByPlayer: Map[Int, Int] = Map[Int, Int](),
-  stats: StatsAggregate = StatsAggregate()
+  stats: StatsAggregate = StatsAggregate(),
+  runes: RunesAggregate = RunesAggregate()
 ) {
 
   def +(other: Participant): ParticipantAggregate = {
     ParticipantAggregate(
       plays + 1,
       playsByPlayer ++ other.participantId,
-      stats + other.stats
+      stats + other.stats,
+      runes + RuneSet.fromList(other.runes)
     )
   }
 
@@ -23,7 +25,8 @@ case class ParticipantAggregate(
     ParticipantAggregate(
       plays + other.plays,
       playsByPlayer |+| other.playsByPlayer,
-      stats + other.stats
+      stats + other.stats,
+      runes + other.runes
     )
   }
 

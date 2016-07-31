@@ -1,5 +1,6 @@
 package ai.legends.athena.aggregates
 
+import org.apache.spark.rdd.RDD
 import ai.legends.athena.utils.Combiners._
 import ai.legends.athena.matches.Rune
 import scala.collection.immutable.Map
