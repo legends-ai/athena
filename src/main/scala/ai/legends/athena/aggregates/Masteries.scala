@@ -2,22 +2,21 @@ package ai.legends.athena.aggregates
 
 import ai.legends.athena.matches.Mastery
 import ai.legends.athena.utils.Combiners._
-import ai.legends.athena.matches.Rune
 import scala.collection.immutable.Map
 
 case class MasteriesAggregate(
-  runes: Map[MasterySet, Int] = Map()
+  masteries: Map[MasterySet, Int] = Map()
 ) {
 
-  def +(rs: MasterySet): MasteriesAggregate = {
+  def +(ms: MasterySet): MasteriesAggregate = {
     MasteriesAggregate(
-      runes ++ rs
+      masteries ++ ms
     )
   }
 
-  def +(rs: MasteriesAggregate): MasteriesAggregate = {
+  def +(ms: MasteriesAggregate): MasteriesAggregate = {
     MasteriesAggregate(
-      runes |+| rs.runes
+      masteries |+| ms.masteries
     )
   }
 
