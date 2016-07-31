@@ -11,7 +11,7 @@ case class ParticipantAggregate(
   stats: StatsAggregate = StatsAggregate(),
   runes: RunesAggregate = RunesAggregate(),
   masteries: MasteriesAggregate = MasteriesAggregate(),
-  skills: SkillsAggregate = SkillsAggregate()
+  spells: SpellsAggregate = SpellsAggregate()
 ) {
 
   def +(other: Participant): ParticipantAggregate = {
@@ -21,7 +21,7 @@ case class ParticipantAggregate(
       stats + other.stats,
       runes + RuneSet.fromList(other.runes),
       masteries + MasterySet.fromList(other.masteries),
-      skills + SkillsSet(other.spell1Id, other.spell2Id)
+      spells + SpellsSet(other.spell1Id, other.spell2Id)
     )
   }
 
@@ -32,7 +32,7 @@ case class ParticipantAggregate(
       stats + other.stats,
       runes + other.runes,
       masteries + other.masteries,
-      skills + other.skills
+      spells + other.spells
     )
   }
 
