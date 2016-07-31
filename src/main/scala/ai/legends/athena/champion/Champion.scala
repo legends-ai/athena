@@ -15,7 +15,7 @@ case class Champion(
 
 object Champion {
 
-  def calculateAll(rdd: RDD[Match])(implicit sc: SparkContext): Set[Champion] = {
+  def calculateAll(rdd: RDD[Match]): Set[Champion] = {
     val count = rdd.count
 
     val participants = rdd.flatMap(_.participants)
