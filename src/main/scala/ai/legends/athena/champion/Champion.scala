@@ -1,6 +1,7 @@
 package ai.legends.athena.champions
 
-import ai.legends.athena.matches.{ Ban, Match, Participant }
+import ai.legends.athena.filters._
+import ai.legends.athena.matches._
 import ai.legends.athena.aggregates._
 import com.datastax.spark.connector._
 import org.apache.spark.SparkContext
@@ -20,6 +21,7 @@ object Champion {
 
     val participants = rdd.flatMap(_.participants)
     val bansMap = bansByChamp(rdd.flatMap(_.teams).flatMap(_.bans))
+
     val participantAggs = ParticipantAggregate.fromRDD(participants).collectAsMap()
 
     participantAggs.map {
@@ -37,6 +39,10 @@ object Champion {
           ChampionScalars(data)
         )
     }.toSet
+  }
+
+  def calculateParticipants(rdd: RDD[Match]): RDD[(ChampionFilters, ParticipantAggregate)] = {
+    ChampionFilters.groupRDD(rdd.flatMap(m => m.participants.map(p => (m, p))))
   }
 
   def bansByChamp(rdd: RDD[Ban]) = {

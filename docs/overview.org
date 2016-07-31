@@ -15,6 +15,14 @@ It is generated with the following steps:
 5. All information is stored in a Champion object.
 6. Data is written as a JSON blob to Cassandra.
 
+* Filtering
+Athena uses the concept of "filters" to allow deeper analysis into the data.
+
+Every permutation of filters is calculated to form aggregates which are later processed by derivers.
+
+1. Matches are filtered and grouped by filter.
+3. Participants are filtered and grouped by filter.
+
 * (DEPRECATED, PLEASE IGNORE) Jobs
 
 Jobs can roughly be categorized into two categories: periodic and on-demand.

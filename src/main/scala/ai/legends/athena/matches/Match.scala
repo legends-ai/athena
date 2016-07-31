@@ -20,7 +20,9 @@ case class Match (
   matchCreation: Int,
   queueType: String,
   matchId: Int
-)
+) {
+
+}
 
 object Match {
 
