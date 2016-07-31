@@ -3,18 +3,18 @@ package ai.legends.athena.aggregates
 import ai.legends.athena.utils.Combiners._
 
 case class SpellsAggregate(
-  skills: Map[SpellsSet, Int] = Map()
+  spells: Map[SpellsSet, Int] = Map()
 ) {
 
   def +(ss: SpellsSet): SpellsAggregate = {
     SpellsAggregate(
-      skills ++ ss
+      spells ++ ss
     )
   }
 
   def +(ss: SpellsAggregate): SpellsAggregate = {
     SpellsAggregate(
-      skills |+| ss.skills
+      spells |+| ss.spells
     )
   }
 
