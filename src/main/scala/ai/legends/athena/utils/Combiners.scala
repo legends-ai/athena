@@ -12,7 +12,7 @@ object Combiners {
 
     /** ++ increments the given key in the map. */
     def ++(b: K): Map[K, Int] = {
-      a + (b -> a.getOrElse(b, 1))
+      a + (b -> (a.getOrElse(b, 0) + 1))
     }
   }
 
