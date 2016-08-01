@@ -29,7 +29,9 @@ case class MasterySet(
 object MasterySet {
   def fromList(masteries: List[Mastery]): MasterySet = {
     MasterySet(
-      masteries.groupBy(_.masteryId).mapValues(_.length)
+      // identity is needed to allow Map to be serializable
+      // http://stackoverflow.com/questions/32900862/map-can-not-be-serializable-in-scala
+      masteries.groupBy(_.masteryId).mapValues(_.length).map(identity)
     )
   }
 }
