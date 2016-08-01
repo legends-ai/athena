@@ -29,7 +29,7 @@ case class RuneSet(
 object RuneSet {
   def fromList(runes: List[Rune]): RuneSet = {
     RuneSet(
-      runes.groupBy(_.runeId).mapValues(_.length)
+      runes.groupBy(_.runeId).mapValues(_.length).map(identity)
     )
   }
 }
