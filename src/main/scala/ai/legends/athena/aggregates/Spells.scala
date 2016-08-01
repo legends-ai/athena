@@ -20,17 +20,15 @@ case class SpellsAggregate(
 
 }
 
-class SpellsSet(
-  val first: Int,
-  val second: Int
+case class SpellsSet(
+  first: Int,
+  second: Int
 )
 
 object SpellsSet {
 
-  def apply(first: Int, second: Int): SpellsSet = {
-    val min = Math.min(first, second)
-    val max = Math.max(first, second)
-    new SpellsSet(min, max)
+  def create(first: Int, second: Int): SpellsSet = {
+    SpellsSet(Math.min(first, second), Math.max(first, second))
   }
 
 }

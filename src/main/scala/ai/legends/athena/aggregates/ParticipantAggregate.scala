@@ -21,7 +21,7 @@ case class ParticipantAggregate(
       stats + other.stats,
       runes + RuneSet.fromList(other.runes),
       masteries + MasterySet.fromList(other.masteries),
-      spells + SpellsSet(other.spell1Id, other.spell2Id)
+      spells + SpellsSet.create(other.spell1Id, other.spell2Id)
     )
   }
 
