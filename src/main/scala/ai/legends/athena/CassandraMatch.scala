@@ -13,7 +13,7 @@ case class CassandraMatch(
 
   /** toMatch converts the Cassandra match to JSON. */
   def toMatch(): Match = {
-    Match.fromJSON(this.body)
+    Match.fromJSON(body, rank)
   }
 
 }

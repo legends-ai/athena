@@ -10,15 +10,18 @@ case class ParticipantGroupKey(
   patch: String,
   duration: Int,
   championId: Int,
-  participantId: Int
+  participantId: Int,
+  tier: Int,
+  region: String,
+  role: Option[String]
 ) {
 
   def filter(plays: Int): ChampionFilters = {
     ChampionFilters(
-      championId,
-      gamesPlayedRange(plays),
-      patch,
-      durationRange(duration)
+      Some(championId),
+      Some(gamesPlayedRange(plays)),
+      Some(patch),
+      Some(durationRange(duration))
     )
   }
 
@@ -55,7 +58,10 @@ object ParticipantGroupKey {
       m.matchVersion,
       m.matchDuration,
       participant.championId,
-      participant.participantId
+      participant.participantId,
+      m.tier,
+      m.region,
+      participant.timeline.map(_.role)
     )
   }
 

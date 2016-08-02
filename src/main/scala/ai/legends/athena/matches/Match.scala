@@ -19,23 +19,27 @@ case class Match (
   region: String,
   matchCreation: Int,
   queueType: String,
-  matchId: Int
-) {
-
-}
+  matchId: Int,
+  division: Int,
+  tier: Int
+)
 
 object Match {
 
-  def fromJSON(json: String): Match = {
-    fromJValue(adaptJSON(parse(json)))
+  def fromJSON(json: String, rank: Long): Match = {
+    val obj = adaptJSON(parse(json))
+    val withTier = obj ~
+      ("tier" -> ((rank >> 16) & 0xffff).toInt) ~
+      ("division" -> (rank & 0xffff).toInt)
+    fromJValue(withTier)
   }
 
-  def adaptJSON(json: JValue): JValue = {
-    json.asInstanceOf[JObject] mapField {
+  def adaptJSON(json: JValue): JObject = {
+    json.mapField {
       case ("participants", _) =>
         ("participants" -> transformParticipants(json \ "participants"))
       case other => other
-    }
+    }.asInstanceOf[JObject]
   }
 
   def fromJValue(json: JValue): Match = {
