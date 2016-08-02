@@ -1,6 +1,7 @@
 package ai.legends.athena.champions
 
 import ai.legends.athena.filters.ChampionFilters
+import ai.legends.athena.filters.ChampionReportFilters
 import ai.legends.athena.matches._
 import ai.legends.athena.aggregates._
 import com.datastax.spark.connector._
@@ -21,10 +22,10 @@ object Champion {
 
     val participants = rdd.flatMap(_.participants)
     val bansMap = bansByChamp(rdd.flatMap(_.teams).flatMap(_.bans))
-    val filteredAggs = calculateParticipants(rdd)
+    val filteredAggs = calculateAggregates(rdd)
 
     filteredAggs.map {
-      case (filters, agg) => (filters.participant.championId, agg)
+      case (filters, agg) => (filters.championId, agg)
     }.reduceByKey((v1, v2) => v1).map {
       case (id, participantAgg) =>
         ChampionData(
@@ -42,12 +43,25 @@ object Champion {
     }.collect().toSet
   }
 
+  def bansByChamp(rdd: RDD[Ban]) = {
+    rdd.map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
+  }
+
+  def calculateAggregates(rdd: RDD[Match]) = {
+    groupAggregates(calculateParticipants(rdd))
+  }
+
   def calculateParticipants(rdd: RDD[Match]): RDD[(ChampionFilters, ParticipantAggregate)] = {
     ChampionFilters.groupRDD(rdd.flatMap(m => m.participants.map(p => (m, p))))
   }
 
-  def bansByChamp(rdd: RDD[Ban]) = {
-    rdd.map(x => (x.championId, 1)).reduceByKey(_ + _).collectAsMap()
+  def groupAggregates(
+    rdd: RDD[(ChampionFilters, ParticipantAggregate)]
+  ): RDD[(ChampionReportFilters, ParticipantAggregate)] = {
+    rdd.map {
+      case (filters, agg) =>
+        (ChampionReportFilters(filters), agg)
+    }.reduceByKey(_ + _)
   }
 
 }
