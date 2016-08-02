@@ -3,12 +3,14 @@ package ai.legends.athena.filters
 import ai.legends.athena.aggregates.ParticipantAggregate
 import ai.legends.athena.matches.Match
 import ai.legends.athena.matches.Participant
-import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext._
+import org.apache.spark.rdd.RDD
 
 case class ChampionFilters(
-  m: MatchFilters,
-  participant: ParticipantFilters
+  championId: Int,
+  gamesPlayed: Range,
+  patch: String,
+  duration: Range
 )
 
 object ChampionFilters {
@@ -24,7 +26,7 @@ object ChampionFilters {
       _ + _,
       _ + _
     ).map {
-      case (key, agg) => (key.championFilters(agg.plays), agg)
+      case (key, agg) => (key.filter(agg.plays), agg)
     }.reduceByKey((v1, v2) => v1)
   }
 

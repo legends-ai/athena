@@ -1,7 +1,6 @@
 package ai.legends.athena
 
 import ai.legends.athena.champions.Champion
-import ai.legends.athena.filters.MatchFilters
 import org.apache.spark.{ SparkConf, SparkContext }
 import com.datastax.spark.connector._
 import org.json4s._
