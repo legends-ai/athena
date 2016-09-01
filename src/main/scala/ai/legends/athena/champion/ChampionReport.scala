@@ -20,7 +20,7 @@ object ChampionReport {
     val count = rdd.count
     val aggs = ChampionFilters.buildAggregates(rdd)
 
-    return aggs
+    return Map()
   }
 
   def bansByChamp(rdd: RDD[Ban])  = {
