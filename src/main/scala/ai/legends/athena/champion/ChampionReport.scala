@@ -16,9 +16,10 @@ case class ChampionReport(
 
 object ChampionReport {
 
-  def calculateAll(rdd: RDD[Match]): Set[(ChampionFilters, ParticipantAggregate)] = {
+  def calculateAll(rdd: RDD[Match]): Map[ChampionFilters, ChampionReport] = {
     val count = rdd.count
-    val aggs = ChampionFilters.buildAggregates(rdd).collect().toSet
+    val aggs = ChampionFilters.buildAggregates(rdd)
+
     return aggs
   }
 

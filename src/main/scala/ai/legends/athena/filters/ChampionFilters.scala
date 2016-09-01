@@ -53,6 +53,9 @@ object ChampionFilters {
           duration = None
         ), agg)
     }.reduceByKey(_ + _)
+
+    return matchupFiltered
+
     val noTier = matchupFiltered.map {
       case (filters, agg) =>
         (filters.copy(
@@ -98,7 +101,6 @@ object ChampionFilters {
 
     // Union all rdds
     List(
-      filtered,
       matchupFiltered,
       noTier,
       noRegion,
