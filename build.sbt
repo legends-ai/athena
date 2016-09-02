@@ -10,6 +10,11 @@ libraryDependencies ++= Seq(
   // Proto stuff
   "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.39" % PB.protobufConfig,
 
+  // We need grpc because we have services.
+  // TODO(igm): don't compile service protos
+  "io.grpc" % "grpc-netty" % "0.14.0",
+  "com.trueaccord.scalapb" %% "scalapb-runtime-grpc" % (PB.scalapbVersion in PB.protobufConfig).value,
+
   // Scalatest
   "org.scalactic" %% "scalactic" % "2.2.6",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test"
@@ -32,10 +37,3 @@ PB.runProtoc in PB.protobufConfig := (args =>
   com.github.os72.protocjar.Protoc.runProtoc("-v300" +: args.toArray))
 
 version in PB.protobufConfig := "3.0.0"
-
-// Need gRPC because we are compiling our service protos as well
-// TODO(igm): don't compile service protos
-libraryDependencies ++= Seq(
-  "io.grpc" % "grpc-netty" % "0.14.0",
-  "com.trueaccord.scalapb" %% "scalapb-runtime-grpc" % (PB.scalapbVersion in PB.protobufConfig).value
-)
