@@ -2,23 +2,28 @@ package ai.legends.athena.sum
 
 import io.asuna.proto.match_sum.MatchSum
 import io.asuna.proto.match_sum.MatchSum.{Scalars => MatchSumScalars}
+import io.asuna.proto.match_sum.MatchSum.{Subscalars => MatchSumSubscalars}
 
 object MatchSumGroup {
-
-  val IdentityMatchSumScalars = MatchSumScalars()
 
   implicit class MatchSumCombiners(val a: MatchSum) {
 
     /** + adds match sums together. */
     def +(b: MatchSum): MatchSum = {
       MatchSum(
-        scalars = for (x <- a.scalars; y <- b.scalars) yield x + y
+        scalars = for (x <- a.scalars; y <- b.scalars) yield x + y,
+        masteries = a.masteries |+| b.masteries,
+        runes = a.runes |+| b.runes,
+        keystones = a.keystones |+| b.keystones,
+        summoners = a.summoners |+| b.summoners,
+        trinkets = a.trinkets |+| b.trinkets,
+        skillOrders = a.skillOrders |+| b.skillOrders
       )
     }
 
   }
 
-  implicit class MatchSumScalarsCombiners(val a: MatchSumScalars) {
+  implicit class ScalarsCombiners(val a: MatchSumScalars) {
 
     /** + adds match sum scalars together. */
     def +(b: MatchSumScalars): MatchSumScalars = {
@@ -50,6 +55,29 @@ object MatchSumGroup {
         quadrakills = a.quadrakills + b.quadrakills,
         pentakills = a.pentakills + b.pentakills
       )
+    }
+
+  }
+
+  implicit class SubscalarsCombiners(val a: MatchSumSubscalars) {
+
+    /** + adds match sum scalars together. */
+    def +(b: MatchSumSubscalars): MatchSumSubscalars = {
+      MatchSumSubscalars(
+        plays = a.plays + b.plays,
+        wins = a.wins + b.wins
+      )
+    }
+
+  }
+
+  implicit class SubscalarsMapCombiners[K](val a: Map[K, MatchSumSubscalars]) {
+
+    /** |+| adds map values together by key. */
+    def |+|(b: Map[K, MatchSumSubscalars]): Map[K, MatchSumSubscalars] = {
+      a.foldLeft(b) {
+        case (dict, (k, v)) => dict + (k -> (v + dict.getOrElse(k, MatchSumSubscalars())))
+      }
     }
 
   }
