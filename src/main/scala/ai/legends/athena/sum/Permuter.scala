@@ -31,8 +31,8 @@ object Permuter {
   def additionalPermutations(rows: RDD[MatchSumRow]): RDD[MatchSumRow] = {
     val noEnemy = rows.map(row => (row.filters.update(_.enemyId := -1), row.sum))
     val noEnemySums = noEnemy.aggregateByKey(MatchSum())(
-    _ + _,
-    _ + _
+      _ + _,
+      _ + _
     )
     noEnemySums.map { case (filters, sum) => MatchSumRow(filters, sum) }
   }
