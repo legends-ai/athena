@@ -3,7 +3,7 @@ package ai.legends.athena.sum
 import ai.legends.athena.data.Match
 import ai.legends.athena.data.Participant
 import ai.legends.athena.data.Deltas
-import ai.legends.athena.data.{ Mastery, Rune }
+import ai.legends.athena.data.{ Mastery, Rune, Event }
 import io.asuna.proto.enums.Role
 import io.asuna.proto.match_filters.MatchFilters
 import io.asuna.proto.match_sum.MatchSum
@@ -71,6 +71,8 @@ object MatchSumRow {
         summoners = Map(p.summonersString -> subscalars),
 
         trinkets = Map(p.stats.item6 -> subscalars),
+
+        skillOrders = Map(Event.buildSkillOrder(m.events, p.participantId) -> subscalars),
 
         durationDistribution = Some(MatchSum.DurationDistribution(
           zeroToTen = 1,

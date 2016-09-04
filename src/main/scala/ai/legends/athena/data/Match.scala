@@ -16,4 +16,11 @@ case class Match (
   matchCreation: Int,
   queueType: String,
   matchId: Int
-)
+) {
+
+  /** Get all events associated with this match. */
+  def events: List[Event] = {
+    timeline.map(_.frames).map(_.map(_.events)).getOrElse(List()).flatten
+  }
+
+}
