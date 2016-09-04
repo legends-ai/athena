@@ -4,6 +4,7 @@ import ai.legends.athena.data.Match
 import ai.legends.athena.data.Participant
 import ai.legends.athena.data.Deltas
 import ai.legends.athena.data.{ Mastery, Rune, Event }
+import io.asuna.proto.enums.Region
 import io.asuna.proto.enums.Role
 import io.asuna.proto.match_filters.MatchFilters
 import io.asuna.proto.match_sum.MatchSum
@@ -18,10 +19,21 @@ object MatchSumRow {
       wins = (if (p.stats.winner) 1 else 0)
     )
 
+    val enemyId = m.participants.find { other =>
+      other.timeline.role == p.timeline.role &&
+      other.timeline.lane == p.timeline.lane &&
+      other != p
+    }.map(_.championId).getOrElse(0)
+
     MatchSumRow(
 
       MatchFilters(
-        championId = p.championId
+        championId = p.championId,
+        enemyId = enemyId,
+        patch = m.matchVersion,
+        tier = tierFromRank(rank),
+        region = regionFromString(m.region),
+        role = roleFromString(p.timeline.lane, p.timeline.role)
       ),
 
       MatchSum(
@@ -98,6 +110,10 @@ object MatchSumRow {
     }
   }
 
+  def regionFromString(str: String): Region = {
+    Region.values.find(_ == str).getOrElse(Region.UNKNOWN_REGION)
+  }
+
   def roleFromString(lane: String, role: String): Role = {
     (lane, role) match {
       case ("TOP", _) => Role.TOP
@@ -105,8 +121,12 @@ object MatchSumRow {
       case ("BOTTOM", "DUO_CARRY") => Role.BOT
       case ("BOTTOM", "DUO_SUPPORT") => Role.SUPPORT
       case ("JUNGLE", _) => Role.JUNGLE
-      case _ => Role.UNKNOWN
+      case _ => Role.UNKNOWN_ROLE
     }
+  }
+
+  def tierFromRank(rank: Long): Int = {
+    ((rank >> 16) & 0xffff).toInt
   }
 
 }
