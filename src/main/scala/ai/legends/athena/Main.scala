@@ -17,10 +17,15 @@ object Main {
     val matches = rdd.map(x => (x.toMatch(), x.rank))
 
     // Permutations of match sum rows
+
+    // Disjoint set
     val permutations = Permuter.groupPermutations(Permuter.permuteMatches(matches))
 
+    // Additional permutations
+    val fullPermutations = permutations.union(Permuter.additionalPermutations(permutations))
+
     // Convert to Cassandra equivalent
-    val matchSums = permutations.map(matchSumRow => CassandraMatchSum(matchSumRow))
+    val matchSums = fullPermutations.map(matchSumRow => CassandraMatchSum(matchSumRow))
     matchSums.saveToCassandra("athena", "match_sums", AllColumns)
 
     println("Wrote " + matchSums.count() + " match sums.")
