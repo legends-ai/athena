@@ -111,7 +111,7 @@ object MatchSumRow {
   }
 
   def regionFromString(str: String): Region = {
-    Region.values.find(_ == str).getOrElse(Region.UNKNOWN_REGION)
+    Region.values.find(_.name == str).getOrElse(Region.UNKNOWN_REGION)
   }
 
   def roleFromString(lane: String, role: String): Role = {
