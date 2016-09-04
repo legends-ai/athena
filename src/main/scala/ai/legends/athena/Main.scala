@@ -2,6 +2,8 @@ package ai.legends.athena
 
 import org.apache.spark.{ SparkConf, SparkContext }
 import com.datastax.spark.connector._
+
+import ai.legends.athena.cassandra.CassandraMatchSum
 import ai.legends.athena.sum.MatchSumRow
 import ai.legends.athena.sum.Permuter
 
@@ -21,6 +23,10 @@ object Main {
 
     // Permutations of match sum rows
     val permutations = Permuter.groupPermutations(Permuter.permuteMatches(matches))
+
+    // Convert to Cassandra equivalent
+    val matchSums = permutations.map(matchSumRow => CassandraMatchSum(matchSumRow))
+    // matchSums.saveToCassandra("athena", "match_sums", AllColumns)
 
     // implicit val formats = Serialization.formats(NoTypeHints)
     // println(write(champs.head))
