@@ -2,13 +2,12 @@ package ai.legends.athena.data
 
 case class Event (
   eventType: String,
-  timestamp: Int,
+  timestamp: Double,
+
+  // SKILL_LEVEL_UP
   participantId: Option[Int],
-  itemId: Option[Int],
-  wardType: Option[String],
-  creatorId: Option[Int],
-  levelUpType: Option[String],
-  skillSlot: Option[Int]
+  skillSlot: Option[Int],
+  levelUpType: Option[String]
 )
 
 object Event {
