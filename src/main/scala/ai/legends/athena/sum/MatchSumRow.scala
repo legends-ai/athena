@@ -54,6 +54,13 @@ object MatchSumRow {
           towersPerMin = deltaFromDeltas(p.timeline.towerKillsPerMinDeltas),
           wardsPlaced = deltaFromDeltas(p.timeline.wardsPerMinDeltas),
           damageTaken = deltaFromDeltas(p.timeline.damageTakenPerMinDeltas)
+        )),
+
+        durationDistribution = Some(MatchSum.DurationDistribution(
+          zeroToTen = 1,
+          tenToTwenty = (if (m.matchDuration > 60 * 10) 1 else 0),
+          twentyToThirty = (if (m.matchDuration > 60 * 20) 1 else 0),
+          thirtyToEnd = (if (m.matchDuration > 60 * 30) 1 else 0)
         ))
 
       )
