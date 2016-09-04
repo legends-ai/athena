@@ -12,6 +12,11 @@ case class MatchSumRow(filters: MatchFilters, sum: MatchSum)
 object MatchSumRow {
 
   def apply(m: Match, p: Participant): MatchSumRow = {
+    val subscalars = MatchSum.Subscalars(
+      plays = 1,
+      wins = (if (p.stats.winner) 1 else 0)
+    )
+
     MatchSumRow(
 
       MatchFilters(
