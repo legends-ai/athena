@@ -1,10 +1,12 @@
 CREATE TABLE IF NOT EXISTS athena.match_sums (
-  champion_id bigint,
-  enemy_id bigint,
+  champion_id int,
+  enemy_id int,
   patch text,
-  tier text,
-  region text,
-  role text,
+  tier int,
+
+  -- Region and Role enums
+  region int,
+  role int,
 
   -- MatchFilters message
   match_filters blob,
