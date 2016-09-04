@@ -24,6 +24,7 @@ mainClass in assembly := Some("ai.legends.athena.Main")
 
 assemblyMergeStrategy in assembly := {
   case x if x contains "netty" => MergeStrategy.first
+  case x if x contains "publicsuffix" => MergeStrategy.first
   case x =>
     val oldStrategy = (assemblyMergeStrategy in assembly).value
     oldStrategy(x)
