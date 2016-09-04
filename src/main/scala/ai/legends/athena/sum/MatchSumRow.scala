@@ -3,6 +3,7 @@ package ai.legends.athena.sum
 import ai.legends.athena.data.Match
 import ai.legends.athena.data.Participant
 import ai.legends.athena.data.Deltas
+import ai.legends.athena.data.{ Mastery, Rune }
 import io.asuna.proto.enums.Role
 import io.asuna.proto.match_filters.MatchFilters
 import io.asuna.proto.match_sum.MatchSum
@@ -60,6 +61,10 @@ object MatchSumRow {
           wardsPlaced = deltaFromDeltas(p.timeline.wardsPerMinDeltas),
           damageTaken = deltaFromDeltas(p.timeline.damageTakenPerMinDeltas)
         )),
+
+        masteries = Map(Mastery.listToString(p.masteries) -> subscalars),
+
+        runes = Map(Rune.listToString(p.runes) -> subscalars),
 
         durationDistribution = Some(MatchSum.DurationDistribution(
           zeroToTen = 1,
