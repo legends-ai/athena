@@ -18,7 +18,7 @@ object Mastery {
   )
 
   def listToKeystoneString(masteries: List[Mastery]): String = {
-    listToString(masteries.filter(keystones.contains(_.masteryId)))
+    listToString(masteries.filter(m => keystones.contains(m.masteryId)))
   }
 
 }

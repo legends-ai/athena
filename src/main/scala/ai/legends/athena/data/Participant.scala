@@ -11,4 +11,10 @@ case class Participant (
   timeline: ParticipantTimeline,
   championId: Int,
   runes: List[Rune]
-)
+) {
+
+  def summonersString: String = {
+    List(spell1Id, spell2Id).sorted.mkString("|")
+  }
+
+}
