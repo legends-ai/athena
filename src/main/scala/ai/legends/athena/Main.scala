@@ -30,6 +30,6 @@ object Main {
 
     // implicit val formats = Serialization.formats(NoTypeHints)
     // println(write(champs.head))
-    println(permutations.count())
+    println(matchSums.count())
   }
 }
