@@ -30,7 +30,7 @@ object MatchSumRow {
       MatchFilters(
         championId = p.championId,
         enemyId = enemyId,
-        patch = m.matchVersion,
+        patch = patchFromVersion(m.matchVersion),
         tier = tierFromRank(rank),
         region = regionFromString(m.region),
         role = roleFromString(p.timeline.lane, p.timeline.role)
@@ -123,6 +123,10 @@ object MatchSumRow {
       case ("JUNGLE", _) => Role.JUNGLE
       case _ => Role.UNKNOWN_ROLE
     }
+  }
+
+  def patchFromVersion(version: String): String = {
+    version.split(".").slice(0, 2).mkString(".")
   }
 
   def tierFromRank(rank: Long): Int = {
