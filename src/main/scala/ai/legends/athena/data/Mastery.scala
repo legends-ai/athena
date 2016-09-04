@@ -13,4 +13,12 @@ object Mastery {
     }.toSeq.sorted.mkString("|")
   }
 
+  val keystones = List[Int](
+    // TODO(pradyuman): keystone mastery ids
+  )
+
+  def listToKeystoneString(masteries: List[Mastery]): String = {
+    listToString(masteries.filter(keystones.contains(_.masteryId)))
+  }
+
 }
