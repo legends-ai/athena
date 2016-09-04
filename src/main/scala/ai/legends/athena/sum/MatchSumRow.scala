@@ -66,6 +66,8 @@ object MatchSumRow {
 
         runes = Map(Rune.listToString(p.runes) -> subscalars),
 
+        keystones = Map(Mastery.listToKeystoneString(p.masteries) -> subscalars),
+
         durationDistribution = Some(MatchSum.DurationDistribution(
           zeroToTen = 1,
           tenToTwenty = (if (m.matchDuration > 60 * 10) 1 else 0),
