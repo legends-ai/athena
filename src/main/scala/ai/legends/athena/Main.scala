@@ -20,7 +20,7 @@ object Main {
     val matches = rdd.map(x => (x.toMatch(), x.rank))
 
     // Permutations of match sum rows
-    val permutations = Permuter.permuteMatches(Permuter.buildMatchSumRows(matches))
+    val permutations = Permuter.groupPermutations(Permuter.permuteMatches(matches))
 
     // implicit val formats = Serialization.formats(NoTypeHints)
     // println(write(champs.head))

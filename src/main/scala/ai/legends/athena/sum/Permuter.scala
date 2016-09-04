@@ -9,19 +9,20 @@ import ai.legends.athena.sum.MatchSumGroup._
 
 object Permuter {
 
-  def buildMatchSumRows(matches: RDD[(Match, Long)]): RDD[(MatchSumRow)] = {
+  def permuteMatches(matches: RDD[(Match, Long)]): RDD[(MatchSumRow)] = {
     matches.flatMap { case (m, rank) =>
       m.participants.map((p) => MatchSumRow.fromData(m, p, rank))
     }
   }
 
-  def permuteMatches(rows: RDD[(MatchSumRow)]): RDD[(MatchFilters, MatchSum)] = {
-    rows.map(row => (row.filters, row)).aggregateByKey(MatchSum())(
+  def groupPermutations(rows: RDD[(MatchSumRow)]): RDD[(MatchSumRow)] = {
+    val aggregated = rows.map(row => (row.filters, row)).aggregateByKey(MatchSum())(
       // Add to the match sum object
       _ + _.sum,
       // Add match sums together
       _ + _
     )
+    aggregated.map { case (filters, sum) => MatchSumRow(filters, sum) }
   }
 
 }
