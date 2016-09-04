@@ -3,6 +3,9 @@ package ai.legends.athena.cassandra
 import ai.legends.athena.sum.MatchSumRow
 import java.io.ByteArrayOutputStream
 
+/**
+  * Cassandra version of MatchSumRow. Allows directly writing to Cassandra from RDD.
+  */
 case class CassandraMatchSum(
   championId: Int,
   enemyId: Int,
