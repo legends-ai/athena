@@ -126,7 +126,7 @@ object MatchSumRow {
   }
 
   def patchFromVersion(version: String): String = {
-    version.split(".").slice(0, 2).mkString(".")
+    version.split("\\.").slice(0, 2).mkString(".")
   }
 
   def tierFromRank(rank: Long): Int = {
