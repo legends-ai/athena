@@ -2,6 +2,7 @@ package ai.legends.athena.sum
 
 import ai.legends.athena.data.Match
 import ai.legends.athena.data.Participant
+import ai.legends.athena.data.Deltas
 import io.asuna.proto.enums.Role
 import io.asuna.proto.match_filters.MatchFilters
 import io.asuna.proto.match_sum.MatchSum
@@ -38,17 +39,38 @@ object MatchSumRow {
           crowdControl = p.stats.totalTimeCrowdControlDealt,
           firstBlood = (if (p.stats.firstBloodKill) 1 else 0),
           firstBloodAssist = (if (p.stats.firstBloodAssist) 1 else 0),
-
-          // TODO(igm): differentials
-
           doubleKills = p.stats.doubleKills,
           tripleKills = p.stats.tripleKills,
           quadrakills = p.stats.quadraKills,
           pentakills = p.stats.pentaKills
+        )),
+
+        deltas = Some(MatchSum.Deltas(
+          csDiff = deltaFromDeltas(p.timeline.creepsPerMinDeltas),
+          xpDiff = deltaFromDeltas(p.timeline.xpDiffPerMinDeltas),
+          damageTakenDiff = deltaFromDeltas(p.timeline.damageTakenPerMinDeltas),
+          xpPerMin = deltaFromDeltas(p.timeline.xpPerMinDeltas),
+          goldPerMin = deltaFromDeltas(p.timeline.goldPerMinDeltas),
+          towersPerMin = deltaFromDeltas(p.timeline.towerKillsPerMinDeltas),
+          wardsPlaced = deltaFromDeltas(p.timeline.wardsPerMinDeltas),
+          damageTaken = deltaFromDeltas(p.timeline.damageTakenPerMinDeltas)
         ))
+
       )
 
     )
+  }
+
+  def deltaFromDeltas(delta: Option[Deltas]): Option[MatchSum.Deltas.Delta] = {
+    delta match {
+      case Some(d) => Some(MatchSum.Deltas.Delta(
+        zeroToTen = d.zeroToTen.getOrElse(0),
+        tenToTwenty = d.tenToTwenty.getOrElse(0),
+        twentyToThirty = d.twentyToThirty.getOrElse(0),
+        thirtyToEnd = d.thirtyToEnd.getOrElse(0)
+      ))
+      case None => None
+    }
   }
 
   def roleFromString(lane: String, role: String): Role = {

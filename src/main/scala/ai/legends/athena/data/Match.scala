@@ -59,20 +59,22 @@ case class Rune (
 )
 
 case class ParticipantTimeline (
-  goldPerMinDeltas: Deltas,
-  damageTakenPerMinDeltas: Deltas,
   role: String,
   lane: String,
-  xpPerMinDeltas: Deltas,
-  creepsPerMinDeltas: Deltas
+  creepsPerMinDeltas: Option[Deltas],
+  damageTakenPerMinDeltas: Option[Deltas],
+  goldPerMinDeltas: Option[Deltas],
+  towerKillsPerMinDeltas: Option[Deltas],
+  wardsPerMinDeltas: Option[Deltas],
+  xpDiffPerMinDeltas: Option[Deltas],
+  xpPerMinDeltas: Option[Deltas]
 )
 
 case class Deltas (
-  fortyToFifty: Option[Double],
-  thirtyToForty: Option[Double],
-  twentyToThirty: Option[Double],
+  zeroToTen: Option[Double],
   tenToTwenty: Option[Double],
-  zeroToTen: Option[Double]
+  twentyToThirty: Option[Double],
+  thirtyToEnd: Option[Double]
 )
 
 case class Mastery (
