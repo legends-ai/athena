@@ -19,7 +19,8 @@ object MatchSumGroup {
         keystones = a.keystones |+| b.keystones,
         summoners = a.summoners |+| b.summoners,
         trinkets = a.trinkets |+| b.trinkets,
-        skillOrders = a.skillOrders |+| b.skillOrders
+        skillOrders = a.skillOrders |+| b.skillOrders,
+        durationDistribution = a.durationDistribution + b.durationDistribution
       )
     }
 
@@ -77,6 +78,23 @@ object MatchSumGroup {
     }
 
   }
+
+  implicit class DurationDistributionCombiners(val a: Option[MatchSum.DurationDistribution]) {
+
+    /** + adds match sum scalars together. */
+    def +(b: Option[MatchSum.DurationDistribution]): Option[MatchSum.DurationDistribution] = {
+      val av = a.getOrElse(MatchSum.DurationDistribution())
+      val bv = b.getOrElse(MatchSum.DurationDistribution())
+      Some(MatchSum.DurationDistribution(
+        zeroToTen = av.zeroToTen + bv.zeroToTen,
+        tenToTwenty = av.tenToTwenty + bv.tenToTwenty,
+        twentyToThirty = av.twentyToThirty + bv.twentyToThirty,
+        thirtyToEnd = av.thirtyToEnd + bv.thirtyToEnd
+      ))
+    }
+
+  }
+
 
   implicit class DeltaCombiners(val a: Option[MatchSumDeltas.Delta]) {
 
