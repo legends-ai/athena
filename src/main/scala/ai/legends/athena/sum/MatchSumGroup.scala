@@ -2,6 +2,7 @@ package ai.legends.athena.sum
 
 import io.asuna.proto.match_sum.MatchSum
 import io.asuna.proto.match_sum.MatchSum.{Scalars => MatchSumScalars}
+import io.asuna.proto.match_sum.MatchSum.{Deltas => MatchSumDeltas}
 import io.asuna.proto.match_sum.MatchSum.{Subscalars => MatchSumSubscalars}
 
 object MatchSumGroup {
@@ -11,7 +12,8 @@ object MatchSumGroup {
     /** + adds match sums together. */
     def +(b: MatchSum): MatchSum = {
       MatchSum(
-        scalars = for (x <- a.scalars; y <- b.scalars) yield x + y,
+        scalars = Some(a.scalars.getOrElse(MatchSumScalars()) + b.scalars.getOrElse(MatchSumScalars())),
+        deltas = a.deltas + b.deltas,
         masteries = a.masteries |+| b.masteries,
         runes = a.runes |+| b.runes,
         keystones = a.keystones |+| b.keystones,
@@ -52,6 +54,42 @@ object MatchSumGroup {
         quadrakills = a.quadrakills + b.quadrakills,
         pentakills = a.pentakills + b.pentakills
       )
+    }
+
+  }
+
+  implicit class DeltasCombiners(val a: Option[MatchSumDeltas]) {
+
+    /** + adds match sum scalars together. */
+    def +(b: Option[MatchSumDeltas]): Option[MatchSumDeltas] = {
+      val av = a.getOrElse(MatchSumDeltas())
+      val bv = b.getOrElse(MatchSumDeltas())
+      Some(MatchSumDeltas(
+        csDiff = av.csDiff + bv.csDiff,
+        xpDiff = av.xpDiff + bv.xpDiff,
+        damageTakenDiff = av.damageTakenDiff + bv.damageTakenDiff,
+        xpPerMin = av.xpPerMin + bv.xpPerMin,
+        goldPerMin = av.goldPerMin + bv.goldPerMin,
+        towersPerMin = av.towersPerMin + bv.towersPerMin,
+        wardsPlaced = av.wardsPlaced + bv.wardsPlaced,
+        damageTaken = av.damageTaken + bv.damageTaken
+      ))
+    }
+
+  }
+
+  implicit class DeltaCombiners(val a: Option[MatchSumDeltas.Delta]) {
+
+    /** + adds deltas together. */
+    def +(b: Option[MatchSumDeltas.Delta]): Option[MatchSumDeltas.Delta] = {
+      val av = a.getOrElse(MatchSumDeltas.Delta())
+      val bv = b.getOrElse(MatchSumDeltas.Delta())
+      Some(MatchSumDeltas.Delta(
+        zeroToTen = av.zeroToTen + bv.zeroToTen,
+        tenToTwenty = av.tenToTwenty + bv.tenToTwenty,
+        twentyToThirty = av.twentyToThirty + bv.twentyToThirty,
+        thirtyToEnd = av.thirtyToEnd + bv.thirtyToEnd
+      ))
     }
 
   }
