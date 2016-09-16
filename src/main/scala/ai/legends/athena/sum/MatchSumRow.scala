@@ -57,8 +57,8 @@ object MatchSumRow {
           crowdControl = p.stats.totalTimeCrowdControlDealt,
           firstBlood = (if (p.stats.firstBloodKill) 1 else 0),
           firstBloodAssist = (if (p.stats.firstBloodAssist) 1 else 0),
-          doubleKills = p.stats.doubleKills,
-          tripleKills = p.stats.tripleKills,
+          doublekills = p.stats.doubleKills,
+          triplekills = p.stats.tripleKills,
           quadrakills = p.stats.quadraKills,
           pentakills = p.stats.pentaKills
         )),

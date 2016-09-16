@@ -47,8 +47,8 @@ object MatchSumGroup {
         crowdControl = a.crowdControl + b.crowdControl,
         firstBlood = a.firstBlood + b.firstBlood,
         firstBloodAssist = a.firstBloodAssist + b.firstBloodAssist,
-        doubleKills = a.doubleKills + b.doubleKills,
-        tripleKills = a.tripleKills + b.tripleKills,
+        doublekills = a.doublekills + b.doublekills,
+        triplekills = a.triplekills + b.triplekills,
         quadrakills = a.quadrakills + b.quadrakills,
         pentakills = a.pentakills + b.pentakills
       )
