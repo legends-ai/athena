@@ -60,7 +60,11 @@ object MatchSumRow {
           doublekills = p.stats.doubleKills,
           triplekills = p.stats.tripleKills,
           quadrakills = p.stats.quadraKills,
-          pentakills = p.stats.pentaKills
+          pentakills = p.stats.pentaKills,
+
+          physicalDamage = p.stats.physicalDamageDealt,
+          magicDamage = p.stats.magicDamageDealt,
+          trueDamage = p.stats.trueDamageDealt
         )),
 
         deltas = Some(MatchSum.Deltas(
