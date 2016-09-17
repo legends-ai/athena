@@ -20,7 +20,11 @@ object MatchSumGroup {
         summoners = a.summoners |+| b.summoners,
         trinkets = a.trinkets |+| b.trinkets,
         skillOrders = a.skillOrders |+| b.skillOrders,
-        durationDistribution = a.durationDistribution + b.durationDistribution
+        durationDistribution = a.durationDistribution + b.durationDistribution,
+        durations = a.durations |+| b.durations,
+        bans = a.bans |+| b.bans,
+        allies = a.allies |+| b.allies,
+        enemies = a.enemies |+| b.enemies
       )
     }
 
