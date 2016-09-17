@@ -95,7 +95,15 @@ object MatchSumRow {
           tenToTwenty = (if (m.matchDuration > 60 * 10) 1 else 0),
           twentyToThirty = (if (m.matchDuration > 60 * 20) 1 else 0),
           thirtyToEnd = (if (m.matchDuration > 60 * 30) 1 else 0)
-        ))
+        )),
+
+        durations = Map((m.matchDuration % 60) -> subscalars),
+
+        bans = m.teams.flatMap(_.bans).map((ban) => (ban.championId, subscalars)).toMap,
+
+        allies = m.participants.filter(_.teamId == p.teamId).map((ally) => (ally.championId, subscalars)).toMap,
+
+        enemies = m.participants.filter(_.teamId != p.teamId).map((enemy) => (enemy.championId, subscalars)).toMap
 
       )
 
