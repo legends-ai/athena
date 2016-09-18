@@ -2,8 +2,14 @@
 
 # default environment
 if [ -z ${ATHENA_ENVIRONMENT} ]; then ATHENA_ENVIRONMENT="dev"; fi
+if [ -z ${ATHENA_CASSANDRA_HOST} ]; then ATHENA_CASSANDRA_HOST="localhost"; fi
+if [ -z ${ATHENA_CASSANDRA_PORT} ]; then ATHENA_CASSANDRA_PORT="9042"; fi
 
-cqlsh -f athena.$ATHENA_ENVIRONMENT.cql
-cqlsh -f match_sum.cql
-cqlsh -f matches.cql
-cqlsh -f rankings.cql
+run_file() {
+    cqlsh -f $1 $ATHENA_CASSANDRA_HOST $ATHENA_CASSANDRA_PORT
+}
+
+run_file athena.$ATHENA_ENVIRONMENT.cql
+run_file match_sum.cql
+run_file matches.cql
+run_file rankings.cql
