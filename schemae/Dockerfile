@@ -1,4 +1,4 @@
-FROM poklet/cassandra:latest
+FROM poklet/opscenter:latest
 
 COPY . /scripts
 WORKDIR /scripts
