@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS athena_out.rankings (
+CREATE TABLE IF NOT EXISTS athena.rankings (
   id text,
   rank bigint,
   time timestamp,
