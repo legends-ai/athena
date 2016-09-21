@@ -11,7 +11,7 @@ object Main {
   def main(args: Array[String]) {
     val conf = new SparkConf(true).set("spark.cassandra.connection.host", "127.0.0.1")
     val sc = new SparkContext(conf)
-    val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
+    val rdd = sc.cassandraTable[CassandraMatch]("athena_out", "matches")
 
     // Ranks and match objects
     val matches = rdd.map(x => (x.toMatch(), x.rank))
@@ -26,7 +26,7 @@ object Main {
 
     // Convert to Cassandra equivalent
     val matchSums = fullPermutations.map(matchSumRow => CassandraMatchSum(matchSumRow))
-    matchSums.saveToCassandra("athena", "match_sums", AllColumns)
+    matchSums.saveToCassandra("athena_out", "match_sums", AllColumns)
 
     println("Wrote " + matchSums.count() + " match sums.")
   }

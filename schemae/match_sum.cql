@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS athena.match_sums (
+CREATE TABLE IF NOT EXISTS athena_out.match_sums (
   champion_id int,
   enemy_id int,
   patch text,
