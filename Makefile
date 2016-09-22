@@ -11,7 +11,7 @@ syncproto:
 	cd src/main/protobuf && git pull origin master
 
 deploy:
-	aws s3 cp --acl public-read ./target/scala-2.11/legendsai-athena-assembly-0.0.1.jar s3://asuna-spark-jobs/legendsai-athena/legendsai-athena-asdf.jar
+	aws s3 cp --acl public-read ./target/scala-2.11/legendsai-athena-assembly-0.0.1.jar s3://asuna-spark-jobs/legendsai-athena/legendsai-athena-latest.jar
 
 dcos-run:
-	dcos spark run --submit-args='-Dspark.mesos.coarse=true --driver-cores 3.5 --driver-memory 10240M -Dspark.cassandra.connection.host=cassandra.marathon.mesos --class ai.legends.athena.Main https://s3-us-west-2.amazonaws.com/asuna-spark-jobs/legendsai-athena/legendsai-athena-asdf.jar'
+	dcos spark run --submit-args='-Dspark.mesos.coarse=true --num-executors 2 --executor-cores 1 --executor-memory 5G -Dspark.cassandra.connection.host=cassandra.marathon.mesos --class ai.legends.athena.Main https://s3-us-west-2.amazonaws.com/asuna-spark-jobs/legendsai-athena/legendsai-athena-latest.jar'
