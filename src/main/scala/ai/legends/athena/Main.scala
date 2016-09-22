@@ -13,7 +13,7 @@ object Main {
 
     val conf = new SparkConf(true).set("spark.cassandra.connection.host", cassandraHost)
     val sc = new SparkContext(conf)
-    val rdd = sc.cassandraTable[CassandraMatch]("athena_out", "matches")
+    val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
 
     // Ranks and match objects
     val matches = rdd.map(x => (x.toMatch(), x.rank))
