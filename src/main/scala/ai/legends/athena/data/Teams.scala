@@ -12,8 +12,8 @@ case class Teams (
   towerKills: Int,
   dominionVictoryScore: Int,
   vilemawKills: Int,
-  riftHeraldKills: Int,
-  firstRiftHerald: Boolean,
+  riftHeraldKills: Option[Int],
+  firstRiftHerald: Option[Boolean],
   baronKills: Int,
   firstTower: Boolean,
   firstInhibitor: Boolean
