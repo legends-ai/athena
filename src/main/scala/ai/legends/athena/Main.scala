@@ -10,6 +10,7 @@ import ai.legends.athena.sum.Permuter
 object Main {
   def main(args: Array[String]) {
     val cassandraHost = if (args.length > 0) args(0) else "127.0.0.1"
+    println(s"Using Cassandra host ${cassandraHost}")
 
     val conf = new SparkConf(true).set("spark.cassandra.connection.host", cassandraHost)
     val sc = new SparkContext(conf)
