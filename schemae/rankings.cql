@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS athena.rankings (
   id text,
   rank bigint,
-  time timestamp,
+  ranking blob,
   PRIMARY KEY(id, rank)
 );
