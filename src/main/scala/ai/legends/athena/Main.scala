@@ -6,15 +6,22 @@ import com.datastax.spark.connector._
 import ai.legends.athena.cassandra.CassandraMatchSum
 import ai.legends.athena.sum.MatchSumRow
 import ai.legends.athena.sum.Permuter
+import org.json4s._
 
 object Main {
-  def main(args: Array[String]) {
+  def main(args: Array[String]) = {
     val conf = new SparkConf(true)
     val sc = new SparkContext(conf)
     val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
 
     // Ranks and match objects
-    val matches = rdd.map(x => (x.toMatch(), x.rank))
+    val matches = rdd.map(x => {
+      try {
+        (x.toMatch(), x.rank)
+      } catch {
+        case _: MappingException => null
+      }
+    }).filter(_ != null)
 
     // Permutations of match sum rows
 
