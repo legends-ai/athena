@@ -14,4 +14,4 @@ deploy:
 	aws s3 cp --acl public-read ./target/scala-2.11/legendsai-athena-assembly-0.0.1.jar s3://asuna-spark-jobs/legendsai-athena/legendsai-athena-latest.jar
 
 dcos-run:
-	dcos spark run --submit-args='-Dspark.mesos.coarse=true --num-executors 1 --executor-cores 1 --executor-memory 3G -Dspark.cassandra.connection.host=cassandra.marathon.mesos --class ai.legends.athena.Main https://s3-us-west-2.amazonaws.com/asuna-spark-jobs/legendsai-athena/legendsai-athena-latest.jar'
+	dcos spark run --submit-args='-Dspark.mesos.coarse=true --num-executors 1 --executor-cores 1 --executor-memory 3G -Dspark.cassandra.connection.host=node-0.cassandra.mesos --class ai.legends.athena.Main https://s3-us-west-2.amazonaws.com/asuna-spark-jobs/legendsai-athena/legendsai-athena-latest.jar'
