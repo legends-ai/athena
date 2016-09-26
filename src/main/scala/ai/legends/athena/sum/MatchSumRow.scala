@@ -106,8 +106,13 @@ object MatchSumRow {
 
         enemies = m.participants.filter(_.teamId != p.teamId).map((enemy) => (enemy.championId, subscalars)).toMap,
 
+        starterItems = m.timeline match {
+          case Some(t) => Map(findBuildPaths(myEvents(t, p).filter(_.timestamp <= 60000)) -> subscalars)
+          case None => Map()
+        },
+
         buildPath = m.timeline match {
-          case Some(t) => Map(makeBuildPaths(t, p) -> subscalars)
+          case Some(t) => Map(findBuildPaths(myEvents(t, p)) -> subscalars)
           case None => Map()
         }
 
@@ -116,10 +121,13 @@ object MatchSumRow {
     )
   }
 
-  def makeBuildPaths(t: Timeline, p: Participant): String = {
+  def myEvents(t: Timeline, p: Participant): List[Event] = {
     val events = t.frames.flatMap(_.events)
-    val myEvents = events.filter(_.participantId.get == p.participantId)
-    val items = myEvents.foldLeft(Set[Int]()) { (itemSet, event) =>
+    return events.filter(_.participantId.get == p.participantId)
+  }
+
+  def findBuildPaths(events: List[Event]): String = {
+    val items = events.foldLeft(Set[Int]()) { (itemSet, event) =>
       event.eventType match {
         case "ITEM_PURCHASED" => itemSet + event.itemId.get
         case "ITEM_DESTROYED" => itemSet - event.itemId.get
