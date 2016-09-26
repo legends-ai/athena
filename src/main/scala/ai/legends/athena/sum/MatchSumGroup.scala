@@ -24,7 +24,9 @@ object MatchSumGroup {
         durations = a.durations |+| b.durations,
         bans = a.bans |+| b.bans,
         allies = a.allies |+| b.allies,
-        enemies = a.enemies |+| b.enemies
+        enemies = a.enemies |+| b.enemies,
+        starterItems = a.starterItems |+| b.starterItems,
+        buildPath = a.buildPath |+| b.buildPath
       )
     }
 

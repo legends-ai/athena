@@ -1,5 +1,8 @@
 package ai.legends.athena.data
 
+import scala.collection.mutable.ListBuffer
+
+
 case class Event (
   eventType: String,
   timestamp: Double,
@@ -45,11 +48,11 @@ object Event {
   }
 
   def findBuildPaths(events: List[Event]): String = {
-    val items = events.foldLeft(Set[Int]()) { (itemSet, event) =>
+    val items = events.foldLeft(ListBuffer[Int]()) { (itemSet, event) =>
       event.eventType match {
-        case "ITEM_PURCHASED" => itemSet + event.itemId.get
-        case "ITEM_DESTROYED" => itemSet - event.itemId.get
-        case "ITEM_UNDO" => itemSet - event.itemBefore.get + event.itemAfter.get
+        case "ITEM_PURCHASED" => itemSet += event.itemId.get
+        case "ITEM_DESTROYED" => itemSet -= event.itemId.get
+        case "ITEM_UNDO" => itemSet -= event.itemBefore.get += event.itemAfter.get
 
         case _ => itemSet
       }
