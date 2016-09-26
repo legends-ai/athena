@@ -107,36 +107,18 @@ object MatchSumRow {
         enemies = m.participants.filter(_.teamId != p.teamId).map((enemy) => (enemy.championId, subscalars)).toMap,
 
         starterItems = m.timeline match {
-          case Some(t) => Map(findBuildPaths(myEvents(t, p).filter(_.timestamp <= 60000)) -> subscalars)
+          case Some(t) => Map(Event.findStarterItems(m.events, p) -> subscalars)
           case None => Map()
         },
 
         buildPath = m.timeline match {
-          case Some(t) => Map(findBuildPaths(myEvents(t, p)) -> subscalars)
+          case Some(t) => Map(Event.findBuildPath(m.events, p) -> subscalars)
           case None => Map()
         }
 
       )
 
     )
-  }
-
-  def myEvents(t: Timeline, p: Participant): List[Event] = {
-    val events = t.frames.flatMap(_.events)
-    return events.filter(_.participantId contains p.participantId)
-  }
-
-  def findBuildPaths(events: List[Event]): String = {
-    val items = events.foldLeft(Set[Int]()) { (itemSet, event) =>
-      event.eventType match {
-        case "ITEM_PURCHASED" => itemSet + event.itemId.get
-        case "ITEM_DESTROYED" => itemSet - event.itemId.get
-        case "ITEM_UNDO" => itemSet - event.itemBefore.get + event.itemAfter.get
-
-        case _ => itemSet
-      }
-    }
-    return items.map(_.toString).mkString("|")
   }
 
   def deltaFromDeltas(delta: Option[Deltas]): Option[MatchSum.Deltas.Delta] = {

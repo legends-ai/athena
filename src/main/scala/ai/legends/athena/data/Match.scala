@@ -20,7 +20,10 @@ case class Match (
 
   /** Get all events associated with this match. */
   def events: List[Event] = {
-    timeline.map(_.frames).map(_.map(_.events)).getOrElse(List()).flatten
+    timeline match {
+      case Some(t) => t.frames.flatMap(_.events)
+      case None => List()
+    }
   }
 
 }
