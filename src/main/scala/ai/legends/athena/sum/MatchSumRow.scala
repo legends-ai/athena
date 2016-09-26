@@ -123,7 +123,7 @@ object MatchSumRow {
 
   def myEvents(t: Timeline, p: Participant): List[Event] = {
     val events = t.frames.flatMap(_.events)
-    return events.filter(_.participantId.get == p.participantId)
+    return events.filter(_.participantId contains p.participantId)
   }
 
   def findBuildPaths(events: List[Event]): String = {
