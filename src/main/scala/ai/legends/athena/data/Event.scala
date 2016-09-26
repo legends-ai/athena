@@ -7,7 +7,14 @@ case class Event (
   // SKILL_LEVEL_UP
   participantId: Option[Int],
   skillSlot: Option[Int],
-  levelUpType: Option[String]
+  levelUpType: Option[String],
+
+  // ITEM_PURCHASED
+  itemId: Option[Int],
+
+  // ITEM_UNDO
+  itemBefore: Option[Int],
+  itemAfter: Option[Int]
 )
 
 object Event {

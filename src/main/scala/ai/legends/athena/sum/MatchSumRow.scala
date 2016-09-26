@@ -3,6 +3,7 @@ package ai.legends.athena.sum
 import ai.legends.athena.data.Match
 import ai.legends.athena.data.Participant
 import ai.legends.athena.data.Deltas
+import ai.legends.athena.data.Timeline
 import ai.legends.athena.data.{ Mastery, Rune, Event }
 import io.asuna.proto.enums.Region
 import io.asuna.proto.enums.Role
@@ -103,11 +104,31 @@ object MatchSumRow {
 
         allies = m.participants.filter(_.teamId == p.teamId).map((ally) => (ally.championId, subscalars)).toMap,
 
-        enemies = m.participants.filter(_.teamId != p.teamId).map((enemy) => (enemy.championId, subscalars)).toMap
+        enemies = m.participants.filter(_.teamId != p.teamId).map((enemy) => (enemy.championId, subscalars)).toMap,
+
+        buildPath = m.timeline match {
+          case Some(t) => Map(makeBuildPaths(t, p) -> subscalars)
+          case None => Map()
+        }
 
       )
 
     )
+  }
+
+  def makeBuildPaths(t: Timeline, p: Participant): String = {
+    val events = t.frames.flatMap(_.events)
+    val myEvents = events.filter(_.participantId.get == p.participantId)
+    val items = myEvents.foldLeft(Set[Int]()) { (itemSet, event) =>
+      event.eventType match {
+        case "ITEM_PURCHASED" => itemSet + event.itemId.get
+        case "ITEM_DESTROYED" => itemSet - event.itemId.get
+        case "ITEM_UNDO" => itemSet - event.itemBefore.get + event.itemAfter.get
+
+        case _ => itemSet
+      }
+    }
+    return items.map(_.toString).mkString("|")
   }
 
   def deltaFromDeltas(delta: Option[Deltas]): Option[MatchSum.Deltas.Delta] = {
