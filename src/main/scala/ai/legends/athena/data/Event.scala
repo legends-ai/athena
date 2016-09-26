@@ -47,8 +47,8 @@ object Event {
     return events.filter(_.participantId == Some(p.participantId))
   }
 
-  def findBuildPaths(events: List[Event]): String = {
-    val items = events.foldLeft(ListBuffer[Int]()) { (itemSet, event) =>
+  def findBuildPaths(events: List[Event]): Seq[Int] = {
+    events.foldLeft(ListBuffer[Int]()) { (itemSet, event) =>
       event.eventType match {
         case "ITEM_PURCHASED" => itemSet += event.itemId.get
         case "ITEM_DESTROYED" => itemSet -= event.itemId.get
@@ -57,15 +57,20 @@ object Event {
         case _ => itemSet
       }
     }
-    return items.map(_.toString).mkString("|")
+  }
+
+  def itemsToString(items: Seq[Int]): String = {
+    items.map(_.toString).mkString("|")
   }
 
   def findStarterItems(events: List[Event], p: Participant): String = {
-    findBuildPaths(myEvents(events, p).filter(_.timestamp <= 60000))
+    itemsToString(
+      findBuildPaths(myEvents(events, p).filter(_.timestamp <= 60000)).sorted)
   }
 
   def findBuildPath(events: List[Event], p: Participant): String = {
-    findBuildPaths(myEvents(events, p))
+    itemsToString(
+      findBuildPaths(myEvents(events, p)))
   }
 
 }
