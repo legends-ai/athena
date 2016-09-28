@@ -59,7 +59,10 @@ object MatchSumGroup {
         doublekills = a.doublekills + b.doublekills,
         triplekills = a.triplekills + b.triplekills,
         quadrakills = a.quadrakills + b.quadrakills,
-        pentakills = a.pentakills + b.pentakills
+        pentakills = a.pentakills + b.pentakills,
+        physicalDamage = a.physicalDamage + b.physicalDamage,
+        magicDamage = a.magicDamage + b.magicDamage,
+        trueDamage = a.trueDamage + b.trueDamage
       )
     }
 
