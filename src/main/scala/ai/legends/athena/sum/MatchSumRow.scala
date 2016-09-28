@@ -141,6 +141,9 @@ object MatchSumRow {
     (lane, role) match {
       case ("TOP", _) => Role.TOP
       case ("MID", _) => Role.MID
+      case ("MIDDLE", _) => Role.MID
+      case ("BOT", "DUO_CARRY") => Role.BOT
+      case ("BOT", "DUO_SUPPORT") => Role.SUPPORT
       case ("BOTTOM", "DUO_CARRY") => Role.BOT
       case ("BOTTOM", "DUO_SUPPORT") => Role.SUPPORT
       case ("JUNGLE", _) => Role.JUNGLE
