@@ -36,5 +36,8 @@ object Main {
     matchSums.saveToCassandra("athena_out", "match_sums", AllColumns)
 
     println("Wrote " + matchSums.count() + " match sums.")
+
+    // stop spark context when we are done
+    sc.stop()
   }
 }
