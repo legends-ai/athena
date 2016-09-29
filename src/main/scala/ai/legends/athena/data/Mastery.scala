@@ -9,7 +9,7 @@ object Mastery {
 
   def listToString(masteries: List[Mastery]): String = {
     masteries.groupBy(identity).mapValues(_.size).map {
-      case (mastery, amount) => s"${mastery.masteryId}:${mastery.rank}:${amount}"
+      case (mastery, amount) => s"${mastery.masteryId}:${mastery.rank}:${mastery.rank}"
     }.toSeq.sorted.mkString("|")
   }
 
