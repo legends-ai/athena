@@ -14,9 +14,16 @@ object Main {
     val sc = new SparkContext(conf)
     var rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
 
-    if (args.length != 0) {
+    // patches
+    if (args.length >= 1) {
       val patches = args(0).split(",")
       rdd = rdd.where("patch IN ?", patches)
+    }
+
+    // regions
+    if (args.length >= 2) {
+      val regions = args(1).split(",")
+      rdd = rdd.where("region IN ?", regions)
     }
 
     // Ranks and match objects
