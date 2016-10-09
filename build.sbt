@@ -7,13 +7,9 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % "2.0.0" % "provided",
   "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3",
 
-  // Proto stuff
-  "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.39" % PB.protobufConfig,
-
-  // We need grpc because we have services.
-  // TODO(igm): don't compile service protos
-  "io.grpc" % "grpc-netty" % "0.14.0",
-  "com.trueaccord.scalapb" %% "scalapb-runtime-grpc" % (PB.scalapbVersion in PB.protobufConfig).value,
+  // Asuna standard lib
+  "io.asuna" %% "asunasan" % "0.0.2",
+  "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.39",
 
   // Scalatest
   "org.scalactic" %% "scalactic" % "2.2.6",
@@ -30,11 +26,10 @@ assemblyMergeStrategy in assembly := {
     oldStrategy(x)
 }
 
-import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
+s3region := com.amazonaws.services.s3.model.Region.US_West
+s3acl := com.amazonaws.services.s3.model.CannedAccessControlList.AuthenticatedRead
 
-PB.protobufSettings
-
-PB.runProtoc in PB.protobufConfig := (args =>
-  com.github.os72.protocjar.Protoc.runProtoc("-v300" +: args.toArray))
-
-version in PB.protobufConfig := "3.0.0"
+// Resolver
+resolvers ++= Seq[Resolver](
+  s3resolver.value("Aincrad", s3("aincrad.asuna.io"))
+)

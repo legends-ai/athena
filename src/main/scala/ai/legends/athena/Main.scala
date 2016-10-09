@@ -4,15 +4,27 @@ import org.apache.spark.{ SparkConf, SparkContext }
 import com.datastax.spark.connector._
 
 import ai.legends.athena.cassandra.CassandraMatchSum
-import ai.legends.athena.sum.MatchSumRow
 import ai.legends.athena.sum.Permuter
 import org.json4s._
 
 object Main {
   def main(args: Array[String]) = {
+
     val conf = new SparkConf(true)
     val sc = new SparkContext(conf)
-    val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
+    var rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
+
+    // patches
+    if (args.length >= 1) {
+      val patches = args(0).split(",")
+      rdd = rdd.where("patch IN ?", patches)
+    }
+
+    // regions
+    if (args.length >= 2) {
+      val regions = args(1).split(",")
+      rdd = rdd.where("region IN ?", regions)
+    }
 
     // Ranks and match objects
     val matches = rdd.map(x => {
