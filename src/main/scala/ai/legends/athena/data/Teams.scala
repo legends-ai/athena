@@ -1,4 +1,4 @@
-package ai.legends.athena.data
+package io.asuna.asunasan.legends.riotmatch
 
 case class Teams (
   firstBaron: Boolean,

@@ -4,7 +4,7 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 import io.asuna.proto.match_filters.MatchFilters
 import io.asuna.proto.match_sum.MatchSum
-import ai.legends.athena.data.Match
+import io.asuna.asunasan.legends.riotmatch.Match
 import ai.legends.athena.sum.MatchSumGroup._
 
 object Permuter {

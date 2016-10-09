@@ -1,4 +1,4 @@
-package ai.legends.athena.data
+package io.asuna.asunasan.legends.riotmatch
 
 import scala.collection.mutable.ListBuffer
 
