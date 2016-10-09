@@ -26,8 +26,15 @@ assemblyMergeStrategy in assembly := {
     oldStrategy(x)
 }
 
+s3overwrite := true
 s3region := com.amazonaws.services.s3.model.Region.US_West
 s3acl := com.amazonaws.services.s3.model.CannedAccessControlList.AuthenticatedRead
+
+// Publishing
+publishMavenStyle := false
+publishTo := {
+  Some(s3resolver.value("Aincrad", s3("aincrad.asuna.io")) withIvyPatterns)
+}
 
 // Resolver
 resolvers ++= Seq[Resolver](
