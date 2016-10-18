@@ -1,29 +1,34 @@
 package ai.legends.athena.sum
 
-import ai.legends.athena.data.Match
-import ai.legends.athena.data.Participant
-import ai.legends.athena.data.Deltas
-import ai.legends.athena.data.Timeline
-import ai.legends.athena.data.{ Mastery, Rune, Event }
 import io.asuna.proto.enums.Region
 import io.asuna.proto.enums.Role
 import io.asuna.proto.match_filters.MatchFilters
 import io.asuna.proto.match_sum.MatchSum
+import io.asuna.proto.charon.CharonData.Match
+import io.asuna.proto.charon.CharonData.Match.ParticipantInfo
+import io.asuna.proto.charon.CharonData.Match.ParticipantInfo.Timeline.Delta
+import io.asuna.proto.charon.CharonData.Match.ParticipantInfo.{ Mastery, Rune }
+import io.asuna.proto.charon.CharonData.Match.Timeline
+import io.asuna.proto.charon.CharonData.Match.Timeline.Frame.Event
+import io.asuna.asunasan.legends.MatchSumOperators._
+import io.asuna.asunasan.legends.RiotMatchHelpers._
 
 case class MatchSumRow(filters: MatchFilters, sum: MatchSum)
 
 object MatchSumRow {
 
-  def fromData(m: Match, p: Participant, rank: Long): MatchSumRow = {
+  def fromData(m: Match, p: ParticipantInfo, rank: Long): MatchSumRow = {
+    // Should never be null, but we lazy
+    val stats = p.stats.get
+    val timeline = p.timeline.get
+
     val subscalars = MatchSum.Subscalars(
       plays = 1,
-      wins = (if (p.stats.winner) 1 else 0)
+      wins = (if (stats.winner) 1 else 0)
     )
 
-    val enemyId = m.participants.find { other =>
-      other.timeline.role == p.timeline.role &&
-      other.timeline.lane == p.timeline.lane &&
-      other != p
+    val enemyId = m.participantInfo.find { other =>
+      other.role == p.role && other != p
     }.map(_.championId).getOrElse(0)
 
     MatchSumRow(
@@ -31,88 +36,88 @@ object MatchSumRow {
       MatchFilters(
         championId = p.championId,
         enemyId = enemyId,
-        patch = patchFromVersion(m.matchVersion),
+        patch = m.patch,
         tier = tierFromRank(rank),
-        region = regionFromString(m.region),
-        role = roleFromString(p.timeline.lane, p.timeline.role)
+        region = m.region,
+        role = p.role
       ),
 
       MatchSum(
         scalars = Some(MatchSum.Scalars(
           plays = 1,
-          wins = (if (p.stats.winner) 1 else 0),
-          goldEarned = p.stats.goldEarned,
-          kills = p.stats.kills,
-          deaths = p.stats.deaths,
-          assists = p.stats.assists,
-          damageDealt = p.stats.totalDamageDealtToChampions,
-          damageTaken = p.stats.totalDamageTaken,
-          minionsKilled = p.stats.minionsKilled,
-          teamJungleMinionsKilled = p.stats.neutralMinionsKilledTeamJungle,
-          enemyJungleMinionsKilled = p.stats.neutralMinionsKilledEnemyJungle,
+          wins = (if (stats.winner) 1 else 0),
+          goldEarned = stats.goldEarned,
+          kills = stats.kills,
+          deaths = stats.deaths,
+          assists = stats.assists,
+          damageDealt = stats.totalDamageDealtToChampions,
+          damageTaken = stats.totalDamageTaken,
+          minionsKilled = stats.minionsKilled,
+          teamJungleMinionsKilled = stats.neutralMinionsKilledTeamJungle,
+          enemyJungleMinionsKilled = stats.neutralMinionsKilledEnemyJungle,
           structureDamage = 1,
-          killingSpree = p.stats.largestKillingSpree,
-          wardsBought = p.stats.sightWardsBoughtInGame + p.stats.visionWardsBoughtInGame,
-          wardsPlaced = p.stats.wardsPlaced,
-          wardsKilled = p.stats.wardsKilled,
-          crowdControl = p.stats.totalTimeCrowdControlDealt,
-          firstBlood = (if (p.stats.firstBloodKill) 1 else 0),
-          firstBloodAssist = (if (p.stats.firstBloodAssist) 1 else 0),
-          doublekills = p.stats.doubleKills,
-          triplekills = p.stats.tripleKills,
-          quadrakills = p.stats.quadraKills,
-          pentakills = p.stats.pentaKills,
+          killingSpree = stats.largestKillingSpree,
+          wardsBought = stats.sightWardsBought + stats.visionWardsBought,
+          wardsPlaced = stats.wardsPlaced,
+          wardsKilled = stats.wardsKilled,
+          crowdControl = stats.totalTimeCrowdControlDealt,
+          firstBlood = (if (stats.firstBloodKill) 1 else 0),
+          firstBloodAssist = (if (stats.firstBloodAssist) 1 else 0),
+          doublekills = stats.doubleKills,
+          triplekills = stats.tripleKills,
+          quadrakills = stats.quadraKills,
+          pentakills = stats.pentaKills,
 
-          physicalDamage = p.stats.physicalDamageDealt,
-          magicDamage = p.stats.magicDamageDealt,
-          trueDamage = p.stats.trueDamageDealt
+          physicalDamage = stats.physicalDamageDealt,
+          magicDamage = stats.magicDamageDealt,
+          trueDamage = stats.trueDamageDealt
         )),
 
         deltas = Some(MatchSum.Deltas(
-          csDiff = deltaFromDeltas(p.timeline.creepsPerMinDeltas),
-          xpDiff = deltaFromDeltas(p.timeline.xpDiffPerMinDeltas),
-          damageTakenDiff = deltaFromDeltas(p.timeline.damageTakenPerMinDeltas),
-          xpPerMin = deltaFromDeltas(p.timeline.xpPerMinDeltas),
-          goldPerMin = deltaFromDeltas(p.timeline.goldPerMinDeltas),
-          towersPerMin = deltaFromDeltas(p.timeline.towerKillsPerMinDeltas),
-          wardsPlaced = deltaFromDeltas(p.timeline.wardsPerMinDeltas),
-          damageTaken = deltaFromDeltas(p.timeline.damageTakenPerMinDeltas)
+          csDiff = deltaFromDeltas(timeline.creepsPerMin),
+          xpDiff = deltaFromDeltas(timeline.xpDiffPerMin),
+          damageTakenDiff = deltaFromDeltas(timeline.damageTakenPerMin),
+          xpPerMin = deltaFromDeltas(timeline.xpPerMin),
+          goldPerMin = deltaFromDeltas(timeline.goldPerMin),
+          towersPerMin = deltaFromDeltas(timeline.towerKillsPerMin),
+          wardsPlaced = deltaFromDeltas(timeline.wardsPerMin),
+          damageTaken = deltaFromDeltas(timeline.damageTakenPerMin)
         )),
 
-        masteries = Map(Mastery.listToString(p.masteries) -> subscalars),
+        masteries = Map(p.masteries.toMasteriesString -> subscalars),
 
-        runes = Map(Rune.listToString(p.runes) -> subscalars),
+        runes = Map(p.runes.toRunesString -> subscalars),
 
-        keystones = Map(Mastery.listToKeystoneString(p.masteries) -> subscalars),
+        keystones = Map(p.masteries.toKeystoneString -> subscalars),
 
         summoners = Map(p.summonersString -> subscalars),
 
-        trinkets = Map(p.stats.item6 -> subscalars),
+        trinkets = Map(p.trinket.toInt -> subscalars),
 
-        skillOrders = Map(Event.buildSkillOrder(m.events, p.participantId) -> subscalars),
+        skillOrders = Map(m.events.buildSkillOrder(p.participantId) -> subscalars),
 
         durationDistribution = Some(MatchSum.DurationDistribution(
           zeroToTen = 1,
-          tenToTwenty = (if (m.matchDuration > 60 * 10) 1 else 0),
-          twentyToThirty = (if (m.matchDuration > 60 * 20) 1 else 0),
-          thirtyToEnd = (if (m.matchDuration > 60 * 30) 1 else 0)
+          tenToTwenty = (if (m.duration > 60 * 10) 1 else 0),
+          twentyToThirty = (if (m.duration > 60 * 20) 1 else 0),
+          thirtyToEnd = (if (m.duration > 60 * 30) 1 else 0)
         )),
 
-        durations = Map((m.matchDuration % 60) -> subscalars),
+        durations = Map((m.duration % 60).toInt -> subscalars),
 
-        bans = m.teams.flatMap(_.bans).map((ban) => (ban.championId, subscalars)).toMap,
+        bans = m.teamInfo.flatMap(_.bans).map((ban) => (ban.championId, subscalars)).toMap,
 
-        allies = m.participants.filter(_.teamId == p.teamId).map((ally) => (ally.championId, subscalars)).toMap,
+        allies = m.participantInfo.filter(_.teamId == p.teamId).map((ally) => (ally.championId, subscalars)).toMap,
 
-        enemies = m.participants.filter(_.teamId != p.teamId).map((enemy) => (enemy.championId, subscalars)).toMap,
+        enemies = m.participantInfo.filter(_.teamId != p.teamId).map((enemy) => (enemy.championId, subscalars)).toMap,
 
         starterItems = m.timeline match {
-          case Some(t) => Map(Event.findStarterItems(m.events, p) -> subscalars)
+          case Some(t) => Map(m.events.findStarterItems(p) -> subscalars)
           case None => Map()
         },
 
         buildPath = m.timeline match {
-          case Some(t) => Map(Event.findBuildPath(m.events, p) -> subscalars)
+          case Some(t) => Map(m.events.findBuildPath(p) -> subscalars)
           case None => Map()
         }
 
@@ -121,38 +126,16 @@ object MatchSumRow {
     )
   }
 
-  def deltaFromDeltas(delta: Option[Deltas]): Option[MatchSum.Deltas.Delta] = {
+  def deltaFromDeltas(delta: Option[Delta]): Option[MatchSum.Deltas.Delta] = {
     delta match {
       case Some(d) => Some(MatchSum.Deltas.Delta(
-        zeroToTen = d.zeroToTen.getOrElse(0),
-        tenToTwenty = d.tenToTwenty.getOrElse(0),
-        twentyToThirty = d.twentyToThirty.getOrElse(0),
-        thirtyToEnd = d.thirtyToEnd.getOrElse(0)
+        zeroToTen = d.zeroToTen,
+        tenToTwenty = d.tenToTwenty,
+        twentyToThirty = d.twentyToThirty,
+        thirtyToEnd = d.thirtyToEnd
       ))
       case None => None
     }
-  }
-
-  def regionFromString(str: String): Region = {
-    Region.values.find(_.name == str).getOrElse(Region.UNKNOWN_REGION)
-  }
-
-  def roleFromString(lane: String, role: String): Role = {
-    (lane, role) match {
-      case ("TOP", _) => Role.TOP
-      case ("MID", _) => Role.MID
-      case ("MIDDLE", _) => Role.MID
-      case ("BOT", "DUO_CARRY") => Role.BOT
-      case ("BOT", "DUO_SUPPORT") => Role.SUPPORT
-      case ("BOTTOM", "DUO_CARRY") => Role.BOT
-      case ("BOTTOM", "DUO_SUPPORT") => Role.SUPPORT
-      case ("JUNGLE", _) => Role.JUNGLE
-      case _ => Role.UNKNOWN_ROLE
-    }
-  }
-
-  def patchFromVersion(version: String): String = {
-    version.split("\\.").slice(0, 2).mkString(".")
   }
 
   def tierFromRank(rank: Long): Int = {
