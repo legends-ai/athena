@@ -6,7 +6,6 @@ import com.datastax.spark.connector._
 import ai.legends.athena.cassandra.CassandraMatchSum
 import ai.legends.athena.sum.MatchSumRow
 import ai.legends.athena.sum.Permuter
-import org.json4s._
 
 object Main {
   def main(args: Array[String]) = {
