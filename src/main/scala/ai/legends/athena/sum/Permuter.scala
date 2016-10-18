@@ -4,14 +4,14 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 import io.asuna.proto.match_filters.MatchFilters
 import io.asuna.proto.match_sum.MatchSum
-import io.asuna.asunasan.legends.riotmatch.Match
+import io.asuna.proto.charon.CharonData.Match
 import ai.legends.athena.sum.MatchSumGroup._
 
 object Permuter {
 
   def permuteMatches(matches: RDD[(Match, Long)]): RDD[MatchSumRow] = {
     matches.flatMap { case (m, rank) =>
-      m.participants.map((p) => MatchSumRow.fromData(m, p, rank))
+      m.participantInfo.map((p) => MatchSumRow.fromData(m, p, rank))
     }
   }
 
