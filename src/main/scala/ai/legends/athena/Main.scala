@@ -11,7 +11,7 @@ object Main {
   def main(args: Array[String]) = {
     val conf = new SparkConf(true)
     val sc = new SparkContext(conf)
-    val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches")
+    val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches_serialized")
 
     // Ranks and match objects
     val matches = rdd.map(x => {
