@@ -1,4 +1,5 @@
-name := "legendsai-athena"
+name := "athena"
+organization := "io.asuna"
 version := "0.1.0-SNAPSHOT"
 scalaVersion := "2.11.8"
 
