@@ -1,5 +1,6 @@
 package ai.legends.athena
 
+import com.google.protobuf.InvalidProtocolBufferException
 import org.apache.spark.{ SparkConf, SparkContext }
 import com.datastax.spark.connector._
 
@@ -18,7 +19,7 @@ object Main {
       try {
         (x.toMatch(), x.rank)
       } catch {
-        case _: MappingException => null
+        case _: InvalidProtocolBufferException => null
       }
     }).filter(_ != null)
 
