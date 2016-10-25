@@ -29,7 +29,6 @@ assemblyMergeStrategy in assembly := {
 
 s3overwrite := true
 s3region := com.amazonaws.services.s3.model.Region.US_West
-s3acl := com.amazonaws.services.s3.model.CannedAccessControlList.AuthenticatedRead
 
 // Publishing
 publishMavenStyle := false
