@@ -27,6 +27,7 @@ assemblyMergeStrategy in assembly := {
     oldStrategy(x)
 }
 
+awsProfile := "asuna"
 s3overwrite := true
 s3region := com.amazonaws.services.s3.model.Region.US_West
 
