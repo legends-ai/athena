@@ -13,6 +13,7 @@ case class CassandraMatchSum(
   tier: Int,
   region: Int,
   role: Int,
+  queue: Int,
   matchFilters: Array[Byte],
   matchSum: Array[Byte]
 )
@@ -34,6 +35,7 @@ object CassandraMatchSum {
       tier = m.filters.tier,
       region = m.filters.region.value,
       role = m.filters.role.value,
+      queue = m.filters.queue.value,
       matchFilters = matchFiltersBytes.toByteArray(),
       matchSum = matchSumBytes.toByteArray()
     )

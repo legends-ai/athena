@@ -10,6 +10,7 @@ import io.asuna.proto.charon.CharonData.Match.ParticipantInfo.Timeline.Delta
 import io.asuna.proto.charon.CharonData.Match.ParticipantInfo.{ Mastery, Rune }
 import io.asuna.proto.charon.CharonData.Match.Timeline
 import io.asuna.proto.charon.CharonData.Match.Timeline.Frame.Event
+import io.asuna.asunasan.legends.RiotUtils
 import io.asuna.asunasan.legends.MatchSumOperators._
 import io.asuna.asunasan.legends.RiotMatchHelpers._
 
@@ -37,9 +38,10 @@ object MatchSumRow {
         championId = p.championId,
         enemyId = enemyId,
         patch = m.patch,
-        tier = tierFromRank(rank),
+        tier = RiotUtils.tierFromRank(rank),
         region = m.region,
-        role = p.role
+        role = p.role,
+        queue = m.queueType
       ),
 
       MatchSum(
@@ -132,10 +134,6 @@ object MatchSumRow {
       ))
       case None => None
     }
-  }
-
-  def tierFromRank(rank: Long): Int = {
-    ((rank >> 16) & 0xffff).toInt
   }
 
 }
