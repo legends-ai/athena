@@ -88,11 +88,7 @@ object MatchSumRow {
 
         runes = Map(p.runes.toRunesString -> subscalars),
 
-        keystones = Map(p.masteries.toKeystoneString -> subscalars),
-
         summoners = Map(p.summonersString -> subscalars),
-
-        trinkets = Map(p.trinket.toInt -> subscalars),
 
         skillOrders = Map(m.events.buildSkillOrder(p.participantId) -> subscalars),
 
