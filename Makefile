@@ -3,6 +3,7 @@ build:
 
 local-run:
 	spark-submit \
+			--conf spark.cassandra.connection.host=127.0.0.1 \
 			--class ai.legends.athena.Main \
 			--master local[4] \
 			target/scala-2.11/athena-assembly.jar
