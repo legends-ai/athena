@@ -42,3 +42,28 @@ publishTo := {
 resolvers ++= Seq[Resolver](
   s3resolver.value("Aincrad", s3("aincrad.asuna.io"))
 )
+
+// Docker stuff
+enablePlugins(DockerPlugin)
+
+dockerfile in docker := {
+  // The assembly task generates a fat JAR file
+  val artifact: File = assembly.value
+  val artifactTargetPath = s"/app/${artifact.name}"
+
+  new Dockerfile {
+    from("gettyimages/spark:2.0.2-hadoop-2.7")
+    add(artifact, artifactTargetPath)
+    entryPoint("spark-submit",
+               "--conf", "spark.cassandra.connection.host=127.0.0.1",
+               "--class", "ai.legends.athena.Main",
+               "--master", "local[4]", artifactTargetPath)
+  }
+}
+
+val base = "096202052535.dkr.ecr.us-west-2.amazonaws.com"
+imageNames in docker := Seq(
+  // Sets the latest tag
+  ImageName(s"${base}/${name.value}:latest"),
+  ImageName(s"${base}/${name.value}:${version.value}")
+)
