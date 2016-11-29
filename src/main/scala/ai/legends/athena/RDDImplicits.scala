@@ -41,6 +41,9 @@ object RDDImplicits {
       rdd.union(withoutEnemies)
     }
 
+    /**
+      * This does everything. I couldn't think of a good method name.
+      */
     def normalize = {
       rdd.combineByFilters.union(withoutEnemies.combineByFilters)
     }
