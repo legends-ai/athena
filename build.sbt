@@ -9,7 +9,7 @@ libraryDependencies ++= Seq(
   "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3",
 
   // Asuna standard lib
-  "io.asuna" %% "asunasan" % "0.2.0-SNAPSHOT",
+  "io.asuna" %% "asunasan" % "0.3.0-SNAPSHOT",
 
   // Scalatest
   "org.scalactic" %% "scalactic" % "2.2.6" % "test",

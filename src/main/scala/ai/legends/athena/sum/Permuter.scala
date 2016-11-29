@@ -6,7 +6,7 @@ import io.asuna.proto.match_filters.MatchFilters
 import io.asuna.proto.match_sum.MatchSum
 import io.asuna.proto.charon.CharonData.Match
 import io.asuna.asunasan.legends.MatchSumHelpers._
-import spire.implicits._
+import cats.implicits._
 
 object Permuter {
 
