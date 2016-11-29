@@ -24,7 +24,7 @@ object Main {
     }
 
     // Calculate all of the filters/sums for each participant
-    val matchesRDD = participants.map(_.tuple).combineByFilters.full
+    val matchesRDD = participants.map(_.tuple).normalize
 
     // Write to cassandra
     matchesRDD.saveToCassandra("athena_out", "match_sums")

@@ -19,6 +19,7 @@ object RDDImplicits {
 
     /**
       * Combines all values of the RDD by filters.
+      * WARNING: this is not memoized. Calling it twice will run it twice!
       */
     def combineByFilters: RDD[(MatchFilters, MatchSum)] = {
       rdd.aggregateByKey(m.empty)(m.combine, m.combine)
@@ -30,7 +31,7 @@ object RDDImplicits {
     def withoutEnemies: RDD[(MatchFilters, MatchSum)] = {
       rdd.map { case (filters, sum) =>
         (filters.update(_.enemyId := -1), sum)
-      }.combineByFilters
+      }
     }
 
     /**
@@ -38,6 +39,10 @@ object RDDImplicits {
       */
     def full = {
       rdd.union(withoutEnemies)
+    }
+
+    def normalize = {
+      rdd.combineByFilters.union(withoutEnemies.combineByFilters)
     }
 
     /**
