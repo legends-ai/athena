@@ -10,7 +10,6 @@ libraryDependencies ++= Seq(
 
   // Asuna standard lib
   "io.asuna" %% "asunasan" % "0.2.0-SNAPSHOT",
-  "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.39",
 
   // Scalatest
   "org.scalactic" %% "scalactic" % "2.2.6" % "test",
@@ -41,6 +40,9 @@ publishTo := {
 resolvers ++= Seq[Resolver](
   s3resolver.value("Aincrad", s3("aincrad.asuna.io"))
 )
+
+// Ensime
+scalaVersion in ThisBuild := "2.11.8"
 
 // Docker stuff
 enablePlugins(DockerPlugin)
