@@ -9,11 +9,11 @@ libraryDependencies ++= Seq(
   "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3",
 
   // Asuna standard lib
-  "io.asuna" %% "asunasan" % "0.1.1-SNAPSHOT" ,
+  "io.asuna" %% "asunasan" % "0.2.0-SNAPSHOT",
   "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.39",
 
   // Scalatest
-  "org.scalactic" %% "scalactic" % "2.2.6",
+  "org.scalactic" %% "scalactic" % "2.2.6" % "test",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 )
 
@@ -33,9 +33,8 @@ s3overwrite := true
 s3region := com.amazonaws.services.s3.model.Region.US_West
 
 // Publishing
-publishMavenStyle := false
 publishTo := {
-  Some(s3resolver.value("Aincrad", s3("aincrad.asuna.io")) withIvyPatterns)
+  Some(s3resolver.value("Aincrad", s3("aincrad.asuna.io")))
 }
 
 // Resolver

@@ -11,7 +11,6 @@ import io.asuna.proto.charon.CharonData.Match.ParticipantInfo.{ Mastery, Rune }
 import io.asuna.proto.charon.CharonData.Match.Timeline
 import io.asuna.proto.charon.CharonData.Match.Timeline.Frame.Event
 import io.asuna.asunasan.legends.RiotUtils
-import io.asuna.asunasan.legends.MatchSumOperators._
 import io.asuna.asunasan.legends.RiotMatchHelpers._
 
 case class MatchSumRow(filters: MatchFilters, sum: MatchSum)
