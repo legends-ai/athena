@@ -1,41 +1,35 @@
 package ai.legends.athena
 
-import com.google.protobuf.InvalidProtocolBufferException
+import io.asuna.asunasan.legends.MatchSumHelpers._
+import RDDImplicits._
 import org.apache.spark.{ SparkConf, SparkContext }
 import com.datastax.spark.connector._
-
-import ai.legends.athena.cassandra.CassandraMatchSum
-import ai.legends.athena.sum.MatchSumRow
-import ai.legends.athena.sum.Permuter
+import scala.util.Success
 
 object Main {
+
   def main(args: Array[String]) = {
     val conf = new SparkConf(true)
     val sc = new SparkContext(conf)
     val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches_serialized")
 
-    // Ranks and match objects
-    val matches = rdd.map(x => {
-      try {
-        (x.toMatch(), x.rank)
-      } catch {
-        case _: InvalidProtocolBufferException => null
-      }
-    }).filter(_ != null)
+    // Parse matches from protobuf and only keep the successful
+    val parsedMatches = rdd.map(_.parse) collect {
+      case Success(x) => x
+    }
 
-    // Permutations of match sum rows
+    // Create participant rows for each
+    val participants = parsedMatches.flatMap { case (m, rank) =>
+      m.participantInfo.map(p => Participant(m, p, rank))
+    }
 
-    // Disjoint set
-    val permutations = Permuter.groupPermutations(Permuter.permuteMatches(matches))
+    // Calculate all of the filters/sums for each participant
+    val matchesRDD = participants.map(_.tuple).combineByFilters.full
 
-    // Additional permutations
-    val fullPermutations = permutations.union(Permuter.additionalPermutations(permutations))
+    // Write to cassandra
+    matchesRDD.saveToCassandra("athena_out", "match_sums")
 
-    // Convert to Cassandra equivalent
-    val matchSums = fullPermutations.map(matchSumRow => CassandraMatchSum(matchSumRow))
-    matchSums.saveToCassandra("athena_out", "match_sums", AllColumns)
-
-    println("Wrote " + matchSums.count() + " match sums.")
+    println("Wrote " + matchesRDD.count() + " match sums.")
 
     // stop spark context when we are done
     sc.stop()
