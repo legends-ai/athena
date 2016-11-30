@@ -1,6 +1,5 @@
 package ai.legends.athena
 
-import io.asuna.asunasan.legends.MatchSumHelpers._
 import RDDImplicits._
 import org.apache.spark.{ SparkConf, SparkContext }
 import com.datastax.spark.connector._

@@ -8,6 +8,7 @@ import cats.kernel.Monoid
 import scala.reflect.ClassTag
 import com.datastax.spark.connector._
 import cats.implicits._
+import io.asuna.asunasan.legends.MatchSumHelpers._
 
 object RDDImplicits {
 
@@ -16,7 +17,7 @@ object RDDImplicits {
     */
   implicit class MatchSumRDD(
     rdd: RDD[(MatchFilters, MatchSum)]
-  )(implicit m: Monoid[MatchSum], kt: ClassTag[MatchFilters], vt: ClassTag[MatchSum], ord: Ordering[MatchFilters] = null) {
+  )(implicit kt: ClassTag[MatchFilters], vt: ClassTag[MatchSum], ord: Ordering[MatchFilters] = null) {
 
     /**
       * Combines all values of the RDD by filters.
