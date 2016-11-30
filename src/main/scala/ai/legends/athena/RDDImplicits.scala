@@ -7,6 +7,7 @@ import org.apache.spark.rdd.RDD
 import cats.kernel.Monoid
 import scala.reflect.ClassTag
 import com.datastax.spark.connector._
+import cats.implicits._
 
 object RDDImplicits {
 
@@ -22,7 +23,7 @@ object RDDImplicits {
       * WARNING: this is not memoized. Calling it twice will run it twice!
       */
     def combineByFilters: RDD[(MatchFilters, MatchSum)] = {
-      rdd.aggregateByKey(m.empty)(m.combine, m.combine)
+      rdd.reduceByKey(_ |+| _)
     }
 
     /**
