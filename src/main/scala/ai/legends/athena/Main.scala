@@ -1,10 +1,7 @@
 package ai.legends.athena
 
 import RDDImplicits._
-import io.asuna.proto.bacchus.BacchusData.RawMatch
-import org.apache.spark.sql.SparkSession
 import org.apache.spark.{ SparkConf, SparkContext }
-import scala.util.{ Success, Try }
 
 object Main {
 
@@ -17,23 +14,13 @@ object Main {
 
     // TODO(igm): check for presence of lock file
 
+    val sc = new SparkContext(cfg.sparkConf)
+
     // We will then fetch all Totsuki fragment names from S3.
     val fragments = s3.fetchObjects()
 
-    val sc = new SparkContext(cfg.sparkConf)
-    val sql = SparkSession.builder().config(cfg.sparkConf).getOrCreate()
-    import sql.implicits._
-
-    // Fetch all of our Parquet files from S3
-    val rawRdd = sql.read.parquet(fragments: _*).rdd
-    val rdd = rawRdd.map(_(0).asInstanceOf[Array[Byte]])
-
-    // Parse matches from protobuf and only keep the successful
-    val parsedMatches = rdd
-      .map(data => Try { RawMatch.parseFrom(data) })
-      .collect {
-        case Success(x) => x
-      }
+    // Next, let's get our raw matches RDD.
+    val parsedMatches = s3.buildMatchesRDD(fragments)
 
     val matchRanks = parsedMatches.map { rawMatch =>
       (rawMatch.data, rawMatch.rank)
