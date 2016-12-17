@@ -7,7 +7,8 @@ import scopt.OptionParser
 case class Config(
   region: String = "na",
   version: String = "",
-  s3bucket: String = "totsuki_fragments",
+  totsukiBucket: String = "totsuki_fragments",
+  lockBucket: String = "athena_locks",
   outKeyspace: String = "athena_partial_sums",
   outTable: String = "partial_sums"
 ) {
@@ -32,10 +33,15 @@ object Config {
       .valueName("<version>")
       .action((x, c) => c.copy(version = x)).required()
 
-    opt[String]("s3bucket")
-      .text("The name of the S3 bucket we are reading from. Defaults to `totsuki_fragments`.")
-      .valueName("<bucket name>")
-      .action((x, c) => c.copy(s3bucket = x))
+    opt[String]("totsuki_bucket")
+      .text("The name of the S3 bucket we are reading Totsuki fragments from. Defaults to `totsuki_fragments`.")
+      .valueName("<bucket>")
+      .action((x, c) => c.copy(totsukiBucket = x))
+
+    opt[String]("lock_bucket")
+      .text("The name of the S3 bucket we are reading/writing lock files from. Defaults to `athena_locks`.")
+      .valueName("<bucket>")
+      .action((x, c) => c.copy(lockBucket = x))
 
     opt[String]("out_keyspace")
       .text("The output Cassandra keyspace of Athena.")

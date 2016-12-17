@@ -22,7 +22,7 @@ class TotsukiFragments(cfg: Config) {
     * need to see if we actually need less granularity.
     */
   def list(): List[String] = {
-    val objects = s3.listObjects(cfg.s3bucket, path).getObjectSummaries
+    val objects = s3.listObjects(cfg.totsukiBucket, path).getObjectSummaries
     objects.iterator().asScala.map(_.getKey).toList
   }
 
