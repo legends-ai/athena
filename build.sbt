@@ -7,9 +7,8 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "2.0.0" % "provided",
   "org.apache.spark" %% "spark-sql" % "2.0.0" % "provided",
   "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3",
-
-  // Asuna standard lib
-  "io.asuna" %% "asunasan" % "0.3.0",
+  "io.asuna" %% "asunasan" % "0.3.5",
+  "com.amazonaws" % "aws-java-sdk-s3" % "1.10.47",
 
   // Scalatest
   "org.scalactic" %% "scalactic" % "2.2.6" % "test",
@@ -68,3 +67,10 @@ imageNames in docker := Seq(
   ImageName(s"${base}/${name.value}:latest"),
   ImageName(s"${base}/${name.value}:${version.value}")
 )
+
+lazy val root = (project in file(".")).
+  enablePlugins(BuildInfoPlugin).
+  settings(
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoPackage := "buildinfo"
+  )

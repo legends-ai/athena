@@ -4,11 +4,12 @@ import io.asuna.asunasan.legends.RiotUtils
 import io.asuna.proto.charon.CharonData.Match
 import io.asuna.proto.charon.CharonData.Match.ParticipantInfo
 import io.asuna.asunasan.legends.RiotMatchHelpers._
+import io.asuna.proto.ids.Rank
 import io.asuna.proto.match_filters.MatchFilters
 import io.asuna.proto.match_sum.MatchSum
 import io.asuna.proto.charon.CharonData.Match.ParticipantInfo.Timeline.Delta
 
-case class Participant(m: Match, p: ParticipantInfo, rank: Long) {
+case class Participant(m: Match, p: ParticipantInfo, rank: Rank) {
 
   lazy val filters = {
     val enemyId = m.participantInfo.find { other =>
@@ -19,7 +20,7 @@ case class Participant(m: Match, p: ParticipantInfo, rank: Long) {
       championId = p.championId,
       enemyId = enemyId,
       patch = m.patch,
-      tier = RiotUtils.tierFromRank(rank),
+      tier = rank.tier,
       region = m.region,
       role = p.role,
       queue = m.queueType
