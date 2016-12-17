@@ -9,19 +9,22 @@ object Main {
     // First, let's parse the config.
     val cfg = Config.mustParse(args)
 
-    // Next, let's set up our S3 client.
-    val s3 = new S3Browser(cfg)
-
     // TODO(igm): check for presence of lock file
 
     val sc = new SparkContext(cfg.sparkConf)
 
+    // Next, let's set up our S3 client.
+    val frags = new TotsukiFragments(cfg)
+
     // We will then fetch all Totsuki fragment names from S3.
-    val fragments = s3.fetchObjects()
+    // This is done independently of the next step because we will use this
+    // when building the lock file.
+    val fragmentNames = frags.list
 
-    // Next, let's get our raw matches RDD.
-    val parsedMatches = s3.buildMatchesRDD(fragments)
+    // Next, let's get our RawMatch RDD.
+    val parsedMatches = frags.makeRDD(fragmentNames)
 
+    // We will now extract matches and ranks from this RDD.
     val matchRanks = parsedMatches.map { rawMatch =>
       (rawMatch.data, rawMatch.rank)
     }.collect {

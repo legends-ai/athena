@@ -7,7 +7,10 @@ import com.amazonaws.services.s3.AmazonS3Client
 import io.asuna.proto.bacchus.BacchusData.RawMatch
 import scala.util.{ Success, Try }
 
-class S3Browser(cfg: Config) {
+/**
+  * Abstraction over Totsuki fragments in S3.
+  */
+class TotsukiFragments(cfg: Config) {
 
   val s3 = new AmazonS3Client()
 
@@ -18,7 +21,7 @@ class S3Browser(cfg: Config) {
     * TODO(igm): maybe support multiple versions being parsed at once?
     * need to see if we actually need less granularity.
     */
-  def fetchObjects(): List[String] = {
+  def list(): List[String] = {
     val objects = s3.listObjects(cfg.s3bucket, path).getObjectSummaries
     objects.iterator().asScala.map(_.getKey).toList
   }
@@ -26,7 +29,7 @@ class S3Browser(cfg: Config) {
   /**
     * Builds the Matches RDD from S3.
     */
-  def buildMatchesRDD(fragments: List[String]): RDD[RawMatch] = {
+  def makeRDD(fragments: List[String]): RDD[RawMatch] = {
     val sql = SparkSession.builder().config(cfg.sparkConf).getOrCreate()
     import sql.implicits._
 
