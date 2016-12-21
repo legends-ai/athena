@@ -29,21 +29,14 @@ class TotsukiFragments(cfg: Config) {
     * Builds the Matches RDD from S3.
     */
   def makeRDD(sc: SparkContext, fragments: List[String]): RDD[RawMatch] = {
-    val streams = fragments.map { frag =>
-      val obj = s3.getObject(cfg.totsukiBucket, frag)
-      RawMatch.streamFromDelimitedInput(obj.getObjectContent)
-    }
+    // Parallelize the fragments so we can parse on each node
+    val frags = sc.parallelize(fragments, 16)
 
-    // TODO(igm): figure out how to do this piecewise.
-    // We probably need to use Spark Streaming for this.
-    // I don't think this will even work -- EVERYTHING is put
-    // into memory this way.
-    val matches = streams.map { stream =>
-      stream.toList
-    }.flatten
-
-    // This is REALLY bad.
-    sc.parallelize(matches, 10)
+    // Read the streams of each fragment
+    frags.map { f =>
+      val obj = s3.getObject(cfg.totsukiBucket, f)
+      RawMatch.streamFromDelimitedInput(obj.getObjectContent).toList
+    }.flatMap(identity)
   }
 
 }
