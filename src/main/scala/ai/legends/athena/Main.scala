@@ -1,6 +1,8 @@
 package ai.legends.athena
 
 import RDDImplicits._
+import io.asuna.asunasan.legends.AthenaLockManager
+import io.asuna.proto.athena.AthenaLock
 import org.apache.spark.{ SparkConf, SparkContext }
 
 object Main {
@@ -9,7 +11,12 @@ object Main {
     // First, let's parse the config.
     val cfg = Config.mustParse(args)
 
-    // TODO(igm): check for presence of lock file
+    // Next, we'll check if the lock is defined. If it is, we still
+    // have not run Jibril, so we cannot run Athena.
+    if (cfg.lockMgr.fetch().isDefined) {
+      println(s"Lock file at ${cfg.lockMgr.path} already exists!")
+      sys.exit(0)
+    }
 
     val sc = new SparkContext(cfg.sparkConf)
 
@@ -42,7 +49,14 @@ object Main {
     // Write to cassandra
     matchesRDD.saveToCassandra(cfg.outKeyspace, cfg.outTable)
 
-    // TODO(igm): write lock file
+    // Collect unique filters
+    val filters = matchesRDD.keys.collect()
+
+    // Write the lock file
+    cfg.lockMgr.store(AthenaLock(
+      paths = fragmentNames,
+      filters = filters
+    ))
 
     println("Wrote " + matchesRDD.count() + " match sums.")
 

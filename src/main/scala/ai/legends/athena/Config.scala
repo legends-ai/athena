@@ -1,6 +1,7 @@
 package ai.legends.athena
 
 import buildinfo.BuildInfo
+import io.asuna.asunasan.legends.AthenaLockManager
 import org.apache.spark.SparkConf
 import scopt.OptionParser
 
@@ -14,6 +15,8 @@ case class Config(
 ) {
 
   lazy val sparkConf = new SparkConf(true).setAppName(BuildInfo.name)
+
+  lazy val lockMgr = new AthenaLockManager(lockBucket, region, version)
 
 }
 
