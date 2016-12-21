@@ -15,7 +15,7 @@ object Main {
     // have not run Jibril, so we cannot run Athena.
     if (cfg.lockMgr.fetch().isDefined) {
       println(s"Lock file at ${cfg.lockMgr.path} already exists!")
-      sys.exit(0)
+      sys.exit(1)
     }
 
     val sc = new SparkContext(cfg.sparkConf)
