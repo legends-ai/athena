@@ -29,7 +29,7 @@ object Main {
     val fragmentNames = frags.list
 
     // Next, let's get our RawMatch RDD.
-    val parsedMatches = frags.makeRDD(fragmentNames)
+    val parsedMatches = frags.makeRDD(sc, fragmentNames)
 
     // We will now extract matches and ranks from this RDD.
     val matchRanks = parsedMatches.map { rawMatch =>

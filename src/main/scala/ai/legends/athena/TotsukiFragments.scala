@@ -1,11 +1,10 @@
 package ai.legends.athena
 
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
 import scala.collection.JavaConverters._
 import com.amazonaws.services.s3.AmazonS3Client
 import io.asuna.proto.bacchus.BacchusData.RawMatch
-import scala.util.{ Success, Try }
 
 /**
   * Abstraction over Totsuki fragments in S3.
@@ -29,20 +28,22 @@ class TotsukiFragments(cfg: Config) {
   /**
     * Builds the Matches RDD from S3.
     */
-  def makeRDD(fragments: List[String]): RDD[RawMatch] = {
-    val sql = SparkSession.builder().config(cfg.sparkConf).getOrCreate()
-    import sql.implicits._
-
-    // Fetch all of our Parquet files from S3
-    val rawRdd = sql.read.parquet(fragments: _*).rdd
-    val rawBytesRdd = rawRdd.map(_(0).asInstanceOf[Array[Byte]])
-
-    // Parse matches from protobuf and only keep the successful
-    rawBytesRdd
-      .map(data => Try { RawMatch.parseFrom(data) })
-      .collect {
-      case Success(x) => x
+  def makeRDD(sc: SparkContext, fragments: List[String]): RDD[RawMatch] = {
+    val streams = fragments.map { frag =>
+      val obj = s3.getObject(cfg.totsukiBucket, frag)
+      RawMatch.streamFromDelimitedInput(obj.getObjectContent)
     }
+
+    // TODO(igm): figure out how to do this piecewise.
+    // We probably need to use Spark Streaming for this.
+    // I don't think this will even work -- EVERYTHING is put
+    // into memory this way.
+    val matches = streams.map { stream =>
+      stream.toList
+    }.flatten
+
+    // This is REALLY bad.
+    sc.parallelize(matches, 10)
   }
 
 }
