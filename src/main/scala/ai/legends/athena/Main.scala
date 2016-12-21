@@ -58,7 +58,7 @@ object Main {
       filters = filters
     ))
 
-    println("Wrote " + matchesRDD.count() + " match sums.")
+    println(s"Wrote ${filters.size} match sums.")
 
     // stop spark context when we are done
     sc.stop()
