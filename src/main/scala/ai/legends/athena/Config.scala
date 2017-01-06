@@ -8,9 +8,9 @@ import scopt.OptionParser
 case class Config(
   region: String = "na",
   version: String = "",
-  totsukiBucket: String = "totsuki_fragments",
-  lockBucket: String = "athena_locks",
-  outKeyspace: String = "athena_partial_sums",
+  totsukiBucket: String = "totsuki-fragments-dev",
+  lockBucket: String = "athena-locks-dev",
+  outKeyspace: String = "match_sums_dev",
   outTable: String = "partial_sums"
 ) {
 

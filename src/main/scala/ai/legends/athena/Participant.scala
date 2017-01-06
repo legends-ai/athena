@@ -1,5 +1,6 @@
 package ai.legends.athena
 
+import cats.implicits._
 import io.asuna.asunasan.legends.RiotUtils
 import io.asuna.proto.charon.CharonData.Match
 import io.asuna.proto.charon.CharonData.Match.ParticipantInfo
@@ -14,7 +15,7 @@ case class Participant(m: Match, p: ParticipantInfo, rank: Rank) {
   lazy val filters = {
     val enemyId = m.participantInfo.find { other =>
       other.role == p.role && other != p
-    }.map(_.championId).getOrElse(0)
+    }.map(_.championId).orEmpty
 
     MatchFilters(
       championId = p.championId,
@@ -104,12 +105,18 @@ case class Participant(m: Match, p: ParticipantInfo, rank: Rank) {
 
       starterItems = m.timeline.map(_ => Map(m.events.findStarterItems(p) -> subscalars)).getOrElse(Map()),
 
-      buildPath = m.timeline.map(_ => Map(m.events.findBuildPath(p) -> subscalars)).getOrElse(Map())
+      buildPath = m.timeline.map(_ => Map(m.events.findBuildPath(p) -> subscalars)).getOrElse(Map()),
+
+      items = m.timeline.map { _ =>
+        m.events.myEvents(p).findBuildPaths.distinct.map { item =>
+          (item -> subscalars)
+        }.toMap
+      }.getOrElse(Map())
 
     )
   }
 
-  def tuple = (filters, sum)
+  def tuple: (MatchFilters, MatchSum) = (filters, sum)
 
   def deltaFromDeltas(delta: Option[Delta]): Option[MatchSum.Deltas.Delta] = {
     delta map { d =>
