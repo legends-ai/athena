@@ -103,14 +103,20 @@ case class Participant(m: Match, p: ParticipantInfo, rank: Rank) {
 
       enemies = m.participantInfo.filter(_.teamId != p.teamId).map((enemy) => (enemy.championId, subscalars)).toMap,
 
-      starterItems = m.timeline.map(_ => Map(m.events.findStarterItems(p) -> subscalars)).orEmpty,
+      starterItems = m.timeline.map(_ => Map(m.events.findStarterItems(p) -> subscalars)).getOrElse(Map()),
 
-      buildPath = m.timeline.map(_ => Map(m.events.findBuildPath(p) -> subscalars)).orEmpty
+      buildPath = m.timeline.map(_ => Map(m.events.findBuildPath(p) -> subscalars)).getOrElse(Map()),
+
+      items = m.timeline.map { _ =>
+        m.events.myEvents(p).findBuildPaths.distinct.map { item =>
+          (item -> subscalars)
+        }.toMap
+      }.getOrElse(Map())
 
     )
   }
 
-  def tuple = (filters, sum)
+  def tuple: (MatchFilters, MatchSum) = (filters, sum)
 
   def deltaFromDeltas(delta: Option[Delta]): Option[MatchSum.Deltas.Delta] = {
     delta map { d =>

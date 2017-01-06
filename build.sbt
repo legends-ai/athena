@@ -7,7 +7,7 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "2.0.0" % "provided",
   "org.apache.spark" %% "spark-sql" % "2.0.0" % "provided",
   "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3",
-  "io.asuna" %% "asunasan" % "0.6.0",
+  "io.asuna" %% "asunasan" % "0.9.2",
   "com.amazonaws" % "aws-java-sdk-s3" % "1.10.47",
 
   // Scalatest
