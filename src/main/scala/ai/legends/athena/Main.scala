@@ -1,24 +1,45 @@
 package ai.legends.athena
 
 import RDDImplicits._
+import io.asuna.asunasan.legends.AthenaLockManager
+import io.asuna.proto.athena.AthenaLock
 import org.apache.spark.{ SparkConf, SparkContext }
-import com.datastax.spark.connector._
-import scala.util.Success
 
 object Main {
 
   def main(args: Array[String]) = {
-    val conf = new SparkConf(true)
-    val sc = new SparkContext(conf)
-    val rdd = sc.cassandraTable[CassandraMatch]("athena", "matches_serialized")
+    // First, let's parse the config.
+    val cfg = Config.mustParse(args)
 
-    // Parse matches from protobuf and only keep the successful
-    val parsedMatches = rdd.map(_.parse) collect {
-      case Success(x) => x
+    // Next, we'll check if the lock is defined. If it is, we still
+    // have not run Jibril, so we cannot run Athena.
+    if (cfg.lockMgr.fetch().isDefined) {
+      println(s"Lock file at ${cfg.lockMgr.path} already exists!")
+      sys.exit(1)
+    }
+
+    val sc = new SparkContext(cfg.sparkConf)
+
+    // Next, let's set up our S3 client.
+    val frags = new TotsukiFragments(cfg)
+
+    // We will then fetch all Totsuki fragment names from S3.
+    // This is done independently of the next step because we will use this
+    // when building the lock file.
+    val fragmentNames = frags.list
+
+    // Next, let's get our RawMatch RDD.
+    val parsedMatches = frags.makeRDD(sc, fragmentNames)
+
+    // We will now extract matches and ranks from this RDD.
+    val matchRanks = parsedMatches.map { rawMatch =>
+      (rawMatch.data, rawMatch.rank)
+    }.collect {
+      case (Some(m), Some(rank)) => (m, rank)
     }
 
     // Create participant rows for each
-    val participants = parsedMatches.flatMap { case (m, rank) =>
+    val participants = matchRanks.flatMap { case (m, rank) =>
       m.participantInfo.map(p => Participant(m, p, rank))
     }
 
@@ -26,11 +47,21 @@ object Main {
     val matchesRDD = participants.map(_.tuple).normalize
 
     // Write to cassandra
-    matchesRDD.saveToCassandra("athena_out", "match_sums")
+    matchesRDD.saveToCassandra(cfg.outKeyspace, cfg.outTable)
 
-    println("Wrote " + matchesRDD.count() + " match sums.")
+    // Collect unique filters
+    val filters = matchesRDD.keys.collect()
+
+    // Write the lock file
+    cfg.lockMgr.store(AthenaLock(
+      paths = fragmentNames,
+      filters = filters
+    ))
+
+    println(s"Wrote ${filters.size} match sums.")
 
     // stop spark context when we are done
     sc.stop()
   }
+
 }

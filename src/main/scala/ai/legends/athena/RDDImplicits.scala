@@ -46,7 +46,7 @@ object RDDImplicits {
     /**
       * This does everything. I couldn't think of a good method name.
       */
-    def normalize = {
+    def normalize: RDD[(MatchFilters, MatchSum)] = {
       rdd.combineByFilters.union(withoutEnemies.combineByFilters)
     }
 
