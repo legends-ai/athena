@@ -10,7 +10,7 @@ case class Config(
   version: String = "",
   totsukiBucket: String = "totsuki_fragments",
   lockBucket: String = "athena_locks",
-  outKeyspace: String = "athena_partial_sums",
+  outKeyspace: String = "match_sums",
   outTable: String = "partial_sums"
 ) {
 
