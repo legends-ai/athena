@@ -18,6 +18,7 @@ libraryDependencies ++= Seq(
 mainClass in assembly := Some("ai.legends.athena.Main")
 
 assemblyMergeStrategy in assembly := {
+  case x if x contains "datastax" => MergeStrategy.first
   case x if x contains "netty" => MergeStrategy.first
   case x if x contains "publicsuffix" => MergeStrategy.first
   case x =>
